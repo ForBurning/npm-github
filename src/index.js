@@ -1,13 +1,13 @@
-import neoTable from './components/neoTable.vue'
+import neoForm from './components/form.vue'
 
-const vueNeoTable = {
+const neoform = {
     install(Vue, options) {
-        Vue.component(neoTable.name, neoTable);
+        Vue.component(neoForm.name, neoForm);
     }
 }
 
 if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(vueNeoTable);
+    window.Vue.use(neoform);
 }
 
-export default neoTable;
+export default neoForm;
