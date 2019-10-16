@@ -1,15 +1,15 @@
 {
-  "name": "@neotrident/neo-table",
-  "version": "1.0.1",
-  "description": "table",
-  "main": "dist/neoTable.min.js",
+  "name": "@neotrident/neo-custom-form",
+  "version": "2.2.1",
+  "description": "custom form by drag",
+  "main": "dist/neoForm.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --hot --inline",
     "build": "webpack --display-error-details --config webpack.config.js"
   },
   "keywords": [
-    "vue, iview, table"
+    "custom form, drag, drop, vue"
   ],
   "author": "liyan",
   "license": "MIT",
