@@ -1,13 +1,13 @@
-import neoForm from './components/form.vue'
+import neoCustomForm from './components/form.vue'
 
-const neoform = {
+const neocustomform = {
     install(Vue, options) {
-        Vue.component(neoForm.name, neoForm);
+        Vue.component(neoCustomForm.name, neoCustomForm);
     }
 }
 
 if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(neoform);
+    window.Vue.use(neocustomform);
 }
 
-export default neoForm;
+export default neoCustomForm;

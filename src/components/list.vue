@@ -3,8 +3,8 @@
     <!-- 布局控件 -->
     <div class="component container-row-item" v-if="item.type === 'container'">
         <!-- 删除面板 -->
-        <Poptip class="remove-btn" v-if="draggable" confirm="" title="您确认删除这个组件吗？" placement="top-end" @on-ok="handleDelete(item)" transfer>
-            <Icon type="ios-trash-outline widget-trash" title="删除组件"></Icon>
+        <Poptip class="remove-btn" v-if="draggable" confirm="" :title="langs.removeConfirm" placement="top-end" @on-ok="handleDelete(item)" transfer>
+            <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
         </Poptip>
 
         <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :selected="handleSelect" :inserted="handleInsert" :key="index" :class="{'form-row-item-active': selectedItem.id == item.id && draggable}">
@@ -16,7 +16,7 @@
     <!-- 文本框组件 -->
     <div class="component" v-if='item.type === "input"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -29,7 +29,7 @@
     <!-- 多行文本框组件 -->
     <div class="component" v-else-if='item.type === "textarea"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -42,7 +42,7 @@
     <!-- 单选下拉框组件 -->
     <div class="component" v-else-if='item.type === "select"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -57,7 +57,7 @@
     <!-- 多选下拉框组件 -->
     <div class="component" v-else-if='item.type === "multiple"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -72,7 +72,7 @@
     <!-- 单选框组件 -->
     <div class="component" v-else-if='item.type === "radio"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -87,7 +87,7 @@
     <!-- 复选框组件 -->
     <div class="component" v-else-if='item.type === "checkbox"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -102,7 +102,7 @@
     <!-- 日期组件 -->
     <div class="component" v-else-if='item.type === "date"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -115,7 +115,7 @@
     <!-- 数字输入框组件 -->
     <div class="component" v-else-if='item.type === "inputNumber"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -128,12 +128,12 @@
     <!-- 附件组件 -->
     <div class="component" v-else-if='item.type === "attachment"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
                 <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" name="file" v-if="draggable">
-                    <Button icon="ios-cloud-upload-outline">上传</Button>
+                    <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
                 <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-else-if="item.url">{{item.name}}</a>
             </vddl-nodrag>
@@ -143,7 +143,7 @@
     <!-- 邮箱组件 -->
     <div class="component" v-else-if='item.type === "email"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -152,7 +152,7 @@
                     <Option value="http://">http://</Option>
                     <Option value="https://">https://</Option>
                 </Select>
-                <Select v-model="item.append" slot="append" style="width: 70px" v-show="item.hasSuffix === '显示'">
+                <Select v-model="item.append" slot="append" style="width: 70px" v-show="item.hasSuffix === langs.show">
                     <Option value=".com">.com</Option>
                     <Option value=".cn">.cn</Option>
                 </Select>
@@ -165,7 +165,7 @@
     <!-- 超链接组件 -->
     <div class="component" v-else-if='item.type === "link"'>
         <div class="component-title">
-            {{item.title}}：</span>
+            {{item.title}}：
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -176,8 +176,8 @@
     </div>
 
     <!-- 删除组件 -->
-    <Poptip v-if='item.type !== "container" && draggable' class="remove-btn" confirm="" title="您确认删除这个组件吗？" width="184" placement="top-end" @on-ok="handleDelete(item)" transfer>
-        <Icon type="ios-trash-outline widget-trash" title="删除组件"></Icon>
+    <Poptip v-if='item.type !== "container" && draggable' class="remove-btn" confirm="" :title="langs.removeConfirm" width="184" placement="top-end" @on-ok="handleDelete(item)" transfer>
+        <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
     </Poptip>
 </vddl-draggable>
 </template>
@@ -188,6 +188,7 @@ import Vue from "vue";
 import VueLazyComponent from '@xunlei/vue-lazy-component'
 Vue.use(VueLazyComponent)
 import uuidv1 from 'uuid/v1'
+import getLangs from "../lang";
 
 export default {
     name: "list",
@@ -209,6 +210,7 @@ export default {
                 "select",
                 "multiple"
             ],
+            langs: {}
         };
     },
     props: [
@@ -217,7 +219,8 @@ export default {
         "index",
         "selectedItem",
         "disable",
-        "draggable"
+        "draggable",
+        "lang"
     ],
     methods: {
         //文件上传成功
@@ -264,6 +267,9 @@ export default {
         handleDelete(item) {
             this.$emit("handleDelete", item);
         }
+    },
+    created(){
+        this.langs = getLangs(this.lang);
     }
 };
 </script>

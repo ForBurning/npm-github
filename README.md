@@ -17,31 +17,45 @@
     
 
 #### 示例
+```javascript
+<template>
+<neo-custom-form :data="data" :lang-package="langPackage">
+    <div slot="preset-fields">
 
-    <template>
-      <neo-form :data="data"></neo-form>
-    </template>
-    
-    <script>
-    import neoForm from "@neotrident/neo-custom-form";
-    export default {
-        name: "neo-custom-form",
-        components: {
-            neoForm
-        },
-        data(){
-			return {
-				data: []
-			}
-		}
-    };
-    </script>
-    
+    </div>
+</neo-custom-form>
+</template>
+
+<script>
+import neoCustomForm from "@neotrident/neo-custom-form";
+export default {
+    name: "demo",
+    components: {
+        neoCustomForm
+    },
+    data() {
+        return {
+            data: [{
+                id: 1571221816413,
+                model: "",
+                title: "多行文本框",
+                type: "textarea"
+            }],
+            langPackage: {
+                input: '单行文本框'
+            }
+        }
+    }
+};
+</script>
+```
 #### API
 ##### Props
 | 属性  | 说明  | 类型    |    默认值    |
 | ------------ | ------------ | ------------ |  ------------    |
 |  data | 表单数据源  | Array  | []  |
+|  lang | 当前语言  | String  |'zh-CN'。可选'en-US'  |
+|  langPackage | 自定义语言包  | Object  | {}|
 
 ##### Slot
 | 属性  | 说明  
