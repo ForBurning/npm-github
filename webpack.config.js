@@ -1,6 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
-const uglify = require("uglifyjs-webpack-plugin");
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
@@ -8,9 +8,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist'),//输出路径，就是新建的dist目录，
         publicPath: '/dist/',
-        filename: 'neoTable.min.js',
+        filename: 'utils.min.js',
+        library: 'utils',
         libraryTarget: 'umd',
-        umdNamedDefine: true
+        umdNamedDefine: true,
     },
     module: {
         rules: [{
@@ -22,7 +23,7 @@ module.exports = {
             use: [
                 'style-loader',
                 'css-loader'
-              ]
+            ]
         },
         {
             test: /\.less$/,
@@ -52,6 +53,7 @@ module.exports = {
             "process.env": {
                 NODE_ENV: JSON.stringify("production")
             }
-        })
+        }),
+        new CleanWebpackPlugin()
     ]
 }

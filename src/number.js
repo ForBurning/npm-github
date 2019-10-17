@@ -1,0 +1,191 @@
+/** @module Number */
+import { isNull } from './type'
+
+/**
+ * 检查给定值是否为整数，返回布尔值。
+ * @function isInt
+ * @param {*} val - 需要检查的值。
+ * @return {boolean}
+ * @example
+ * U.isInt(0)
+ * // => true
+ *
+ * U.isInt(1.15)
+ * // => false
+ * 
+ * U.isInt('3')
+ * // => false
+ */
+export const isInt = val => Number.isInteger(val)
+
+/**
+ * 将数字value格式化为千位符数字字符串。如果value是数字，则返回格式化后的字符串，否则报错。
+ * @function toThousands
+ * @param {number|string} value - 需要千位符格式化的值。
+ * @param {string} [separator=','] - 可选，分隔符。
+ * @returns {string|NaN}
+ * @example
+ * U.toThousands(-1545454)
+ * // => '-1,545,454'
+ *
+ * U.toThousands(1545454.1545)
+ * // => '1,545,454.1545'
+ * 
+ * U.toThousands('1545454.1545', '-')
+ * // => '1-545-454.1545'
+ *
+ * U.toThousands(0)
+ * // => '0'
+ *
+ * U.toThousands(null)
+ * // => '0'
+ *
+ * U.toThousands(undefined)
+ * // => NaN
+ */
+export const toThousands = (value, separator = ',') => (
+  isNull(value) ? '0' : isNaN(Number(value))
+    ? NaN : `${value}`.split('.').map(
+      (v, i) => i === 0 ? v.replace(/([-|+]?\d)(?=(\d{3})+$)/g, `$1${separator}`) : v,
+    ).join('.')
+)
+
+/**
+ * 数字value是否在两个数之间。如果不设置end，则start默认为0，判断value是否在0与start之间。
+ * @function inRange
+ * @param {number} value - 需要判断的数值。
+ * @param {number} [start=0] - 起点值，只提供两个参数时start默认为0。
+ * @param {number} end - 终点值，只提供两个参数时取第二个参数值为该值，且起点值为0。
+ * @return {boolean}
+ * @example
+ * U.inRange(5, 4)
+ * // => false
+ *
+ * U.inRange(5, 7)
+ * // => true
+ *
+ * U.inRange(5, 4, 7)
+ * // => true
+ *
+ * U.inRange(5, 7, 10)
+ * // => false
+ *
+ * U.inRange(5, 10, 7)
+ * // => false
+ */
+export const inRange = (value, start, end = null) => {
+  if (end && start > end) [end, start] = [start, end]
+  return isNull(end) ? value >= 0 && value < start : value >= start && value < end
+}
+
+/**
+ * 四舍五入函数
+ * @function round
+ * @param {number} val - 数字。
+ * @param {number} [decimals=0] - 可选，保留的数字精度，默认为0。
+ * @return {number}
+ * @example
+ * U.round(1.2006, 3)
+ * // => 1.201
+ *
+ * U.round(1.2006)
+ * // => 1
+ */
+export const round = (val, decimals = 0) => Number(`${Math.round(`${val}e${decimals}`)}e-${decimals}`)
+
+/**
+ * 生成一个start～end之间随机数字
+ * @function random
+ * @param {number} start - 可选，数字。
+ * @param {number} end - 可选，数字。
+ * @return {number}
+ * @example
+ * const a = U.random()
+ * // => 0 < a < 1
+ *
+ * const b = U.random(3)
+ * // => 0 < b < 3
+ * 
+ * const c = U.random(3, 5)
+ * // => 3 < c < 5
+ * 
+ * const d = U.random(5, 3)
+ * // => 3 < d < 5
+ * 
+ * const e = U.random(-1)
+ * // => -1 < e < 0
+ * 
+ * const f = U.random(-1, 1)
+ * // => -1 < f < 1
+ */
+export const random = (start, end) => (
+  start && end
+    ? Math.random() * (Math.abs(start - end)) + Math.min(start, end)
+    : Math.random() * (start || end || 1)
+)
+
+/**
+ * 保留小数位数
+ * @function keepFixed
+ * @param {number|string} val - 数值
+ * @param {number} precision - 非负整数，保留小数的位数
+ * @param {boolean} [useFiller=true] - 可选，小数位数不足时是否使用0填充，默认为true
+ * @return {string}
+ * @example
+ * U.keepFixed(-15.12, 4)
+ * // => -15.1200
+ * 
+ * U.keepFixed(15.1234, 2)
+ * // => -15.12
+ */
+export const keepFixed = (val, precision, useFiller = true) => {
+  let i = `${val}`.indexOf('.')
+  if (i < 0) {
+    return useFiller ? `${val}.${'0'.repeat(precision)}` : `${val}`
+  }
+  i += precision + 1
+  val = `${val}`.substring(0, i)
+  return useFiller ? val.padEnd(i, '0') : val
+}
+
+/**
+ * 求平均值函数
+ * @function average
+ * @param {number} args - 参数列表，数值类型
+ * @return {number}
+ * @example
+ * U.average(10, 20)
+ * // => 15
+ * 
+ * U.average(-10, -20, 30, 40)
+ * // => 10
+ */
+export const average = (...args) => args.reduce((acc, v) => acc + v, 0) / args.length
+
+/**
+ * 判断字符串是否为正整数
+ * @function isPositiveInt
+ * @param {number|string} num - 参数列表
+ * @return {boolean}
+ * @example
+ * U.isPositiveInt(1)
+ * // => true
+ * 
+ * U.isPositiveInt('f')
+ * // => false
+ */
+export const isPositiveInt = (num) => /(^[1-9]\d*$)/.test(num)
+
+/**
+ * 判断字符串是否为正数
+ * @function isPositive
+ * @param {number|string} num - 参数列表
+ * @return {boolean}
+ * @example
+ * U.isPositive(1)
+ * // => true
+ * 
+ * U.isPositive(-1)
+ * // => false
+ */
+export const isPositive = (num) => Number(num) > 0
