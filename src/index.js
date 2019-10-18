@@ -12,3 +12,7 @@ import * as object from "./object";
 export {object};
 import * as string from "./string";
 export {string};
+import cookie from "./cookie";
+export {cookie};
+import md5 from "./md5";
+export {md5};
