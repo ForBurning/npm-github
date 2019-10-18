@@ -1,7 +1,7 @@
 {
   "name": "@neotrident/neo-custom-form",
   "version": "2.2.2",
-  "description": "custom form by drag",
+  "description": "自定义表单",
   "main": "dist/neoCustomForm.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
