@@ -31,7 +31,7 @@
                 <div class="form">
                     <slot name="preset-fields"></slot>
                     <vddl-list class="custom-fields" :list="formData" :inserted="handleInsert" effect-allowed="move">
-                        <list ref="list" v-for="(item, index) in formData" :draggable="draggable" :key="index" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete">
+                        <list ref="list" v-for="(item, index) in formData" :draggable="draggable" :key="index" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang">
                         </list>
                     </vddl-list>
                 </div>
@@ -120,7 +120,6 @@ Vue.use(Vddl);
 import Vuebar from 'vuebar'
 Vue.use(Vuebar);
 
-
 import list from "./list.vue"
 import getLangs from "../lang";
 import getContainers from "../modal/containers";
@@ -135,7 +134,7 @@ export default {
         },
         data: {
             type: Array,
-            default: ()=> []
+            default: () => []
         },
         draggable: {
             type: Boolean,
@@ -145,9 +144,13 @@ export default {
             type: String,
             default: 'zh-CN'
         },
-        langPackage:{
-            type: Object,
-            default: ()=> {}
+        langPackage: {
+            type: String,
+            default: () => {}
+        },
+        header: {
+            type: Function,
+            default: () => {}
         }
     },
     data() {
@@ -158,7 +161,7 @@ export default {
             placeholderWidget: ['input', 'textarea'],
             langs: {},
             containers: {},
-            modals:{}
+            modals: {}
         }
     },
     components: {
@@ -214,7 +217,7 @@ export default {
             );
         }
     },
-    created(){
+    created() {
         this.langs = Object.assign({}, getLangs(this.lang), this.langPackage);
         this.containers = getContainers(this.langs);
         this.modals = getModals(this.langs);
@@ -235,6 +238,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
+    padding: 0 6px;
 
     .neo-body {
         height: 100%;
@@ -315,14 +319,13 @@ body {
                     display: none;
                 }
 
-                &:hover{
-                    .vb-dragger{
+                &:hover {
+                    .vb-dragger {
                         display: block;
                     }
                 }
             }
 
-            
         }
 
         .right-section {

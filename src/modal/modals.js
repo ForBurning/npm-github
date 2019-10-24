@@ -22,7 +22,7 @@ const getModals = langs => {
 			type: 'select',
 			model: '',
 			title: langs.select,
-			placeholder: langs.select,
+			placeholder: langs.selectPlaceholder,
 			icon: 'md-arrow-dropdown',
 			value: [{
 				value: `${langs.option}1`,
@@ -92,7 +92,7 @@ const getModals = langs => {
 			title: langs.date,
 			placeholder: langs.selectPlaceholder,
 			format: langs.dateFormatVal1,
-			formatOptions: [langs.dateFormatVal1, langs.dateFormatVal2, langs.dateFormatVal3, langs.dateFormatVal4],
+			formatOptions: [langs.dateFormatVal1, langs.dateFormatVal2],
 			icon: 'md-calendar'
 		},
 		{
@@ -130,7 +130,7 @@ const getModals = langs => {
 			model: '',
 			title: langs.attachment,
 			icon: 'md-link',
-			action: '',
+			action: 'https://cimsmanage.ilabpower.com/Controls/UploadFileOrgan?folder=materielAttachment',
 			nameMapping: '',
 			urlMapping: '',
 			name: '',

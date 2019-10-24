@@ -55,10 +55,10 @@ export default {
 | ------------ | ------------ | ------------ |  ------------    |
 |  data | 表单数据源  | Array  | []  |
 |  lang | 当前语言  | String  |'zh-CN'。可选'en-US'  |
-|  langPackage | 自定义语言包  | Object  | {}|
+|  langPackage | 自定义语言包  | Object  | {} |
+|  header | upload header参数  | Object  | {} | 
 
 ##### Slot
 | 属性  | 说明  
 | ------------ | ------------
 |  preset-fields | 预留字段插槽（显示表单保留字段）
-

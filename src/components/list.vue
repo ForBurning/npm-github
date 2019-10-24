@@ -210,18 +210,39 @@ export default {
                 "select",
                 "multiple"
             ],
-            langs: {}
+            langs: {},
         };
     },
-    props: [
-        "item",
-        "list",
-        "index",
-        "selectedItem",
-        "disable",
-        "draggable",
-        "lang"
-    ],
+    props: {
+        item: {
+            type: Object,
+            default: () => {}
+        },
+        list: {
+            type: Array,
+            default: () => []
+        },
+        index: {
+            type: Number,
+            default: 0
+        },
+        selectedItem: {
+            type: Object,
+            default: () => {}
+        },
+        draggable: {
+            type: Boolean,
+            default: true
+        },
+        lang: {
+            type: String,
+            default: () => 'zh-CN'
+        },
+        header: {
+            type: Function,
+            default: () => {}
+        }
+    },
     methods: {
         //文件上传成功
         onSuccess(response, file, fileList) {
@@ -246,14 +267,15 @@ export default {
         },
         //文件上传失败
         onError(error, file, fileList) {
-            this.$Message.error(error && error.message || '上传失败！');
+            this.$Message.error(error && error.message || this.langs.uploaderFail);
         },
         //上传文件之前
         beforeUpload() {
             if (!this.item.action) {
-                this.$Message.warning('请先填写该附件的上传地址');
+                this.$Message.warning(this.langs.actionWarning);
                 return false;
             }
+            Object.assign(this.uploadHeaders, this.header());
         },
         //插入组件
         handleInsert(data) {
@@ -268,7 +290,7 @@ export default {
             this.$emit("handleDelete", item);
         }
     },
-    created(){
+    created() {
         this.langs = getLangs(this.lang);
     }
 };
