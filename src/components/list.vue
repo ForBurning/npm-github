@@ -1,13 +1,13 @@
 <template>
 <vddl-draggable class="form-row-item" :draggable="item" :index="index" :disable-if="!draggable" :wrapper="list" :selected="handleSelect" :class="{'form-row-item-active': selectedItem.id == item.id && draggable, isContainer: item.type === 'container'}">
     <!-- 布局控件 -->
-    <div class="component container-row-item" v-if="item.type === 'container'">
+    <div class="component container-row-item" v-if="item.type === 'container'" :class="{'form-row-item-active': selectedItem.id == item.id && draggable}">
         <!-- 删除面板 -->
         <Poptip class="remove-btn" v-if="draggable" confirm="" :title="langs.removeConfirm" placement="top-end" @on-ok="handleDelete(item)" transfer>
             <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
         </Poptip>
 
-        <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :selected="handleSelect" :inserted="handleInsert" :key="index" :class="{'form-row-item-active': selectedItem.id == item.id && draggable}">
+        <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :selected="handleSelect" :inserted="handleInsert" :key="index" >
             <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :draggable="draggable" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect">
             </list>
         </vddl-list>
@@ -16,7 +16,7 @@
     <!-- 文本框组件 -->
     <div class="component" v-if='item.type === "input"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}} <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -29,7 +29,7 @@
     <!-- 多行文本框组件 -->
     <div class="component" v-else-if='item.type === "textarea"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -42,7 +42,7 @@
     <!-- 单选下拉框组件 -->
     <div class="component" v-else-if='item.type === "select"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -57,7 +57,7 @@
     <!-- 多选下拉框组件 -->
     <div class="component" v-else-if='item.type === "multiple"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -72,12 +72,12 @@
     <!-- 单选框组件 -->
     <div class="component" v-else-if='item.type === "radio"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
                 <RadioGroup v-model="item.model" class="ivu-middle-group" v-if="draggable">
-                    <Radio v-for="m in item.value" :value="m.value" :label="m.label" :key="m.value" :disabled="item.isCheck"></Radio>
+                    <Radio v-for="m in item.value" :label="m.label" :key="m.value" :disabled="item.isCheck"></Radio>
                 </RadioGroup>
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
@@ -87,12 +87,12 @@
     <!-- 复选框组件 -->
     <div class="component" v-else-if='item.type === "checkbox"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
                 <CheckboxGroup v-model="item.model" class="ivu-middle-group" v-if="draggable">
-                    <Checkbox v-for="m in item.value" :value="m.value" :label="m.label" :key="m.value"></Checkbox>
+                    <Checkbox v-for="m in item.value" :label="m.label" :key="m.value"></Checkbox>
                 </CheckboxGroup>
                 <div class="view-model" v-else>{{item.model.join(',')}}</div>
             </vddl-nodrag>
@@ -102,7 +102,7 @@
     <!-- 日期组件 -->
     <div class="component" v-else-if='item.type === "date"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -115,7 +115,7 @@
     <!-- 数字输入框组件 -->
     <div class="component" v-else-if='item.type === "inputNumber"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -128,7 +128,7 @@
     <!-- 附件组件 -->
     <div class="component" v-else-if='item.type === "attachment"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
@@ -143,7 +143,7 @@
     <!-- 邮箱组件 -->
     <div class="component" v-else-if='item.type === "email"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -165,7 +165,7 @@
     <!-- 超链接组件 -->
     <div class="component" v-else-if='item.type === "link"'>
         <div class="component-title">
-            {{item.title}}：
+            {{item.title}}<c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -241,6 +241,10 @@ export default {
         header: {
             type: Function,
             default: () => {}
+        },
+        hasColon: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -303,6 +307,7 @@ export default {
 
     &.form-row-item-active {
         background-color: #f9f9f9;
+        padding-right: 1px;
 
         .remove-btn {
             display: block;
@@ -342,21 +347,28 @@ export default {
                     margin-top: -12px;
                 }
             }
-
-            .attachment {
-                .file {}
-            }
         }
 
         &.container-row-item {
-            border: 1px solid #7fcdfd;
+            
             border-left: none;
             border-right: none;
+            
+            &.form-row-item-active{
+                border: 1px solid #0682DA;
+
+                .container-column{
+                    border-right: 1px solid #0682DA;
+                }
+            }
 
             .container-column {
                 flex: 1;
-                border-right: 1px solid #7fcdfd;
                 min-height: 45px;
+
+                .component{
+                    padding-right: 30px;
+                }
 
                 &:last-child {
                     border-right: none;

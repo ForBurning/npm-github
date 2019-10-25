@@ -29,9 +29,9 @@
         <div v-bar class="content" :class="{shadow: draggable}">
             <div>
                 <div class="form">
-                    <slot name="preset-fields"></slot>
+                    <slot name="preset-fields" class="preset-fields"></slot>
                     <vddl-list class="custom-fields" :list="formData" :inserted="handleInsert" effect-allowed="move">
-                        <list ref="list" v-for="(item, index) in formData" :draggable="draggable" :key="index" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang">
+                        <list ref="list" v-for="(item, index) in formData" :draggable="draggable" :key="index" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
                         </list>
                     </vddl-list>
                 </div>
@@ -151,6 +151,10 @@ export default {
         header: {
             type: Function,
             default: () => {}
+        },
+        hasColon: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -239,6 +243,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     padding: 0 6px;
+    background-color: #fff;
 
     .neo-body {
         height: 100%;
@@ -276,7 +281,7 @@ body {
         .middle-section {
             flex: 1 0 auto;
             padding: 0 12px;
-            height: 100%;
+            // height: 100%;
 
             .content {
                 position: relative;
@@ -292,6 +297,7 @@ body {
                     height: 100%;
                     display: flex;
                     flex-direction: column;
+                    padding-top: 12px;
 
                     .preset-fields {
                         flex-shrink: 0;
@@ -337,6 +343,13 @@ body {
 
             .ivu-input-wrapper {
                 margin: 8px 0;
+            }
+
+            .ivu-alert-message{
+                h4{
+                    font-size: 12px;
+                    font-weight: normal;
+                }
             }
         }
     }

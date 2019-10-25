@@ -42,8 +42,9 @@ module.exports = {
             test: /\.(png|jpg|gif|ttf|svg|woff|eot|woff2|woff)$/,
             loader: 'url-loader',
             query: {
-                limit: 30000,
-                name: '[name].[ext]?[hash]'
+                limit: 100000,
+                name: '[name].[ext]?[hash]',
+                outputPath: "/fonts/"
             }
         }
         ]
