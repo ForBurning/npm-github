@@ -1,6 +1,6 @@
 {
   "name": "@neotrident/neo-custom-form",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "自定义表单",
   "main": "dist/neoCustomForm.min.js",
   "scripts": {
