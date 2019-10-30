@@ -54,9 +54,10 @@ export default {
 | 属性  | 说明  | 类型    |    默认值    |
 | ------------ | ------------ | ------------ |  ------------    |
 |  data | 表单数据源  | Array  | []  |
-|  lang | 当前语言  | String  |'zh-CN'。可选'en-US'  |
+|  lang | 当前语言  | String  |默认zh-CN。可选en-US  |
 |  langPackage | 自定义语言包  | Object  | {} |
 |  header | upload header参数  | Object  | {} | 
+|  mode | 表单模式  | String  | 默认design, 可选 edit, view | 
 
 ##### Slot
 | 属性  | 说明  

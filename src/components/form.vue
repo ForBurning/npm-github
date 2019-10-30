@@ -1,7 +1,7 @@
 <template>
 <div class="neo-form" :style="{height}">
     <Row type="flex" class="neo-body">
-        <Col class="left-section" v-if="draggable">
+        <Col class="left-section" v-if="isDesign">
         <Tabs value="tab1" size="small">
             <TabPane :label="langs.fieldsTxt" name="tab1">
                 <div class="new-elements">
@@ -16,7 +16,7 @@
             <TabPane :label="langs.layoutTxt" name="tab2">
                 <div class="new-elements">
                     <div class="panel panel--info">
-                        <vddl-draggable class="button" :title="langs.dragToCanvas" v-for="item in containers" :key="item.id" :draggable="item" type="container" effect-allowed="copy">
+                        <vddl-draggable class="button" :title="langs.dragToCanvas" v-for="item in containers" :key="item.id" :draggable="item" effect-allowed="copy">
                             {{item.title}}
                             <span class="column-2"></span>
                         </vddl-draggable>
@@ -26,19 +26,19 @@
         </Tabs>
         </Col>
         <Col class="middle-section">
-        <div v-bar class="content" :class="{shadow: draggable}">
+        <div v-bar class="content" :class="{shadow: isDesign}">
             <div>
                 <div class="form">
                     <slot name="preset-fields" class="preset-fields"></slot>
                     <vddl-list class="custom-fields" :list="formData" :inserted="handleInsert" effect-allowed="move">
-                        <list ref="list" v-for="(item, index) in formData" :draggable="draggable" :key="index" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
+                        <list v-for="(item, index) in formData" :mode="mode" :key="item.id" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
                         </list>
                     </vddl-list>
                 </div>
             </div>
         </div>
         </Col>
-        <Col class="right-section" v-if="draggable">
+        <Col class="right-section" v-if="isDesign">
         <Tabs>
             <TabPane :label="langs.setting" name="1">
                 <div v-if="selectedItem.id">
@@ -136,9 +136,10 @@ export default {
             type: Array,
             default: () => []
         },
-        draggable: {
-            type: Boolean,
-            default: true
+        //design, edit, view
+        mode: {
+            type: String,
+            default: 'design'
         },
         lang: {
             type: String,
@@ -165,7 +166,8 @@ export default {
             placeholderWidget: ['input', 'textarea'],
             langs: {},
             containers: {},
-            modals: {}
+            modals: {},
+            isDesign: this.mode === 'design'
         }
     },
     components: {
@@ -345,8 +347,8 @@ body {
                 margin: 8px 0;
             }
 
-            .ivu-alert-message{
-                h4{
+            .ivu-alert-message {
+                h4 {
                     font-size: 12px;
                     font-weight: normal;
                 }

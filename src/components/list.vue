@@ -1,14 +1,13 @@
 <template>
-<vddl-draggable class="form-row-item" :draggable="item" :index="index" :disable-if="!draggable" :wrapper="list" :selected="handleSelect" :class="{'form-row-item-active': selectedItem.id == item.id && draggable, isContainer: item.type === 'container'}">
+<vddl-draggable class="form-row-item" :draggable="item" :index="index" :disable-if="isEdit || isView" :wrapper="list" :selected="handleSelect" :class="{'form-row-item-active': selectedItem.id == item.id && isDesign, isContainer: item.type === 'container'}">
     <!-- 布局控件 -->
-    <div class="component container-row-item" v-if="item.type === 'container'" :class="{'form-row-item-active': selectedItem.id == item.id && draggable}">
-        <!-- 删除面板 -->
-        <Poptip class="remove-btn" v-if="draggable" confirm="" :title="langs.removeConfirm" placement="top-end" @on-ok="handleDelete(item)" transfer>
+    <div class="component container-row-item" v-if="item.type === 'container'" :class="{'form-row-item-active': item.hasOwnProperty('columns') && isDesign}">
+        <Poptip class="remove-btn" v-if="isDesign" confirm="" :title="langs.removeConfirm" placement="top-end" @on-ok="handleDelete(item)" transfer>
             <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
         </Poptip>
 
-        <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :selected="handleSelect" :inserted="handleInsert" :key="index" >
-            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :draggable="draggable" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect">
+        <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :key="index" :inserted="handleInsert">
+            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect">
             </list>
         </vddl-list>
     </div>
@@ -16,11 +15,12 @@
     <!-- 文本框组件 -->
     <div class="component" v-if='item.type === "input"'>
         <div class="component-title">
-            {{item.title}} <c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Input v-model="item.model" :placeholder="item.placeholder" v-if="draggable" />
+                <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit" />
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
         </div>
@@ -29,11 +29,12 @@
     <!-- 多行文本框组件 -->
     <div class="component" v-else-if='item.type === "textarea"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Input type="textarea" v-model="item.model" :placeholder="item.placeholder" v-if="draggable" />
+                <Input type="textarea" v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit" />
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
         </div>
@@ -42,11 +43,12 @@
     <!-- 单选下拉框组件 -->
     <div class="component" v-else-if='item.type === "select"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Select v-model="item.model" :placeholder="item.placeholder" v-if="draggable">
+                <Select v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
                     <Option v-for="m in item.value" :value="m.value" :key="m.label">{{ m.label }}</Option>
                 </Select>
                 <div class="view-model" v-else>{{item.value.filter(s=>s.value === item.model).length ? item.value.filter(s=>s.value === item.model)[0].label : ''}}</div>
@@ -57,11 +59,12 @@
     <!-- 多选下拉框组件 -->
     <div class="component" v-else-if='item.type === "multiple"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Select v-model="item.model" multiple="" :placeholder="item.placeholder" v-if="draggable">
+                <Select v-model="item.model" multiple="" :placeholder="item.placeholder" v-if="isDesign || isEdit">
                     <Option v-for="m in item.value" :value="m.value" :key="m.label">{{ m.label }}</Option>
                 </Select>
                 <div class="view-model" v-else>{{item.model.join(',')}}</div>
@@ -72,11 +75,12 @@
     <!-- 单选框组件 -->
     <div class="component" v-else-if='item.type === "radio"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <RadioGroup v-model="item.model" class="ivu-middle-group" v-if="draggable">
+                <RadioGroup v-model="item.model" class="ivu-middle-group" v-if="isDesign || isEdit">
                     <Radio v-for="m in item.value" :label="m.label" :key="m.value" :disabled="item.isCheck"></Radio>
                 </RadioGroup>
                 <div class="view-model" v-else>{{item.model}}</div>
@@ -87,11 +91,12 @@
     <!-- 复选框组件 -->
     <div class="component" v-else-if='item.type === "checkbox"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <CheckboxGroup v-model="item.model" class="ivu-middle-group" v-if="draggable">
+                <CheckboxGroup v-model="item.model" class="ivu-middle-group" v-if="isDesign || isEdit">
                     <Checkbox v-for="m in item.value" :label="m.label" :key="m.value"></Checkbox>
                 </CheckboxGroup>
                 <div class="view-model" v-else>{{item.model.join(',')}}</div>
@@ -102,11 +107,12 @@
     <!-- 日期组件 -->
     <div class="component" v-else-if='item.type === "date"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <DatePicker @on-change="item.model=$event" v-model="item.model" type="date" :format="item.format" :placeholder="item.placeholder" v-if="draggable"></DatePicker>
+                <DatePicker @on-change="item.model=$event" v-model="item.model" type="date" :format="item.format" :placeholder="item.placeholder" v-if="isDesign || isEdit"></DatePicker>
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
         </div>
@@ -115,11 +121,12 @@
     <!-- 数字输入框组件 -->
     <div class="component" v-else-if='item.type === "inputNumber"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <InputNumber :min="0" v-model="item.model" v-if="draggable"></InputNumber>
+                <InputNumber :min="0" v-model="item.model" v-if="isDesign || isEdit"></InputNumber>
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
         </div>
@@ -128,11 +135,12 @@
     <!-- 附件组件 -->
     <div class="component" v-else-if='item.type === "attachment"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" name="file" v-if="draggable">
+                <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" name="materielAttachmentFile" v-if="isDesign || isEdit">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
                 <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-else-if="item.url">{{item.name}}</a>
@@ -143,11 +151,12 @@
     <!-- 邮箱组件 -->
     <div class="component" v-else-if='item.type === "email"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Input v-model="item.model" :placeholder="item.placeholder" v-if="draggable">
+                <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
                 <Select v-model="item.prepend" slot="prepend" style="width: 80px">
                     <Option value="http://">http://</Option>
                     <Option value="https://">https://</Option>
@@ -165,18 +174,19 @@
     <!-- 超链接组件 -->
     <div class="component" v-else-if='item.type === "link"'>
         <div class="component-title">
-            {{item.title}}<c v-if="hasColon">：</c>
+            {{item.title}}
+            <c v-if="hasColon">：</c>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Input v-model="item.model" :placeholder="item.placeholder" v-if="draggable" />
+                <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign" />
                 <a target="_blank" style="display:block;" class="view-model" :href="item.model" v-else>{{item.model}}</a>
             </vddl-nodrag>
         </div>
     </div>
 
     <!-- 删除组件 -->
-    <Poptip v-if='item.type !== "container" && draggable' class="remove-btn" confirm="" :title="langs.removeConfirm" width="184" placement="top-end" @on-ok="handleDelete(item)" transfer>
+    <Poptip v-if='item.type !== "container" && isDesign' class="remove-btn" confirm="" :title="langs.removeConfirm" width="184" placement="top-end" @on-ok="handleDelete(item)" transfer>
         <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
     </Poptip>
 </vddl-draggable>
@@ -211,6 +221,9 @@ export default {
                 "multiple"
             ],
             langs: {},
+            isDesign: this.mode === 'design',
+            isEdit: this.mode === 'edit',
+            isView: this.mode === 'view',
         };
     },
     props: {
@@ -230,9 +243,9 @@ export default {
             type: Object,
             default: () => {}
         },
-        draggable: {
-            type: Boolean,
-            default: true
+        mode: {
+            type: String,
+            default: 'design'
         },
         lang: {
             type: String,
@@ -350,15 +363,15 @@ export default {
         }
 
         &.container-row-item {
-            
+
             border-left: none;
             border-right: none;
-            
-            &.form-row-item-active{
-                border: 1px solid #0682DA;
 
-                .container-column{
-                    border-right: 1px solid #0682DA;
+            &.form-row-item-active {
+                border: 1px solid #dcdee2;
+
+                .container-column {
+                    border-right: 1px solid #dcdee2;
                 }
             }
 
@@ -366,7 +379,7 @@ export default {
                 flex: 1;
                 min-height: 45px;
 
-                .component{
+                .component {
                     padding-right: 30px;
                 }
 
