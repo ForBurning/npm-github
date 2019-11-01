@@ -140,10 +140,10 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
+                <Upload ref="upload" :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
-                <a style="display:inline-block;" target="_blank" :href="encodeURIComponent(item.url)" class="file" v-else-if="item.url">{{item.name}}</a>
+                <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-if="item.url">{{item.name}}</a>
             </vddl-nodrag>
         </div>
     </div>
@@ -180,7 +180,7 @@
                         <Option value="http://">http://</Option>
                         <Option value="https://">https://</Option>
                     </Select>
-                    <Select v-model="item.append" slot="append" style="width: 70px" v-show="item.hasSuffix === langs.show">
+                    <Select v-model="item.append" slot="append" style="width: 70px">
                         <Option value=".com">.com</Option>
                         <Option value=".cn">.cn</Option>
                     </Select>
@@ -268,7 +268,7 @@ export default {
     methods: {
         //文件上传成功
         onSuccess(response, file, fileList) {
-            this.item.model = response;
+            this.$refs.upload.clearFiles();
             if (this.item.nameMapping) {
                 let name = {};
                 Object.assign(name, response);
@@ -284,7 +284,7 @@ export default {
                 this.item.urlMapping.split('.').map(key => {
                     url = url[key];
                 })
-                this.item.url = url;
+                this.item.url = /^\//.test(url) ? '/' + encodeURIComponent(url.substr(1))  : url;
             }
         },
         //文件上传失败

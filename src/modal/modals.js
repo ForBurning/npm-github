@@ -128,7 +128,6 @@ const getModals = langs => {
 		{
 			id: 2000000,
 			type: 'attachment',
-			model: '',
 			title: langs.attachment,
 			icon: 'md-link',
 			action: 'https://cimsmanage.ilabpower.com/Controls/UploadFileOrgan?folder=materielAttachment',
