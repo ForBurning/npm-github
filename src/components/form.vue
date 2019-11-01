@@ -30,8 +30,8 @@
             <div>
                 <div class="form">
                     <slot name="preset-fields" class="preset-fields"></slot>
-                    <vddl-list class="custom-fields" :list="formData" :inserted="handleInsert" effect-allowed="move">
-                        <list v-for="(item, index) in formData" :mode="mode" :key="item.id" :item="item" :index="index" :list="formData" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
+                    <vddl-list class="custom-fields" :list="data" :inserted="handleInsert" effect-allowed="move">
+                        <list v-for="(item, index) in data" :mode="mode" :key="item.id" :item="item" :index="index" :list="data" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
                         </list>
                     </vddl-list>
                 </div>
@@ -54,7 +54,7 @@
 
                     <div class="widget-option" v-if="optionsWidget.includes(selectedItem.type)">
                         <div class="sub-title">{{langs.optionsTxt}}</div>
-                        <Input v-model="item.label" v-for="item in selectedItem.value" :key="item.value" @on-blur="handleBlur($event, item)">
+                        <Input v-model="item.label" v-for="item in selectedItem.value" :key="item.value">
                         <Button slot="prepend" icon="md-remove" @click="handleMinusOption(item.value)"></Button>
                         <Button slot="append" icon="md-add" @click="handleAddOption"></Button>
                         </Input>
@@ -89,11 +89,13 @@
 
                     <div class="widget-option" v-if="selectedItem.type==='attachment'">
                         <div class="sub-title">{{langs.actionTxt}}</div>
-                        <Input type="url" v-model="selectedItem.action" />
+                        <Input type="text" v-model="selectedItem.action" />
+                        <div class="sub-title">fileName</div>
+                        <Input type="text" v-model="selectedItem.fileName" />
                         <div class="sub-title">{{langs.nameMapping}}（eg: .a.b）</div>
-                        <Input type="url" v-model="selectedItem.nameMapping" />
+                        <Input type="text" v-model="selectedItem.nameMapping" />
                         <div class="sub-title">{{langs.urlMapping}}（eg: .a.b）</div>
-                        <Input type="url" v-model="selectedItem.urlMapping" />
+                        <Input type="text" v-model="selectedItem.urlMapping" />
                     </div>
                 </div>
                 <div v-else>
@@ -160,7 +162,6 @@ export default {
     },
     data() {
         return {
-            formData: this.data,
             selectedItem: {},
             optionsWidget: ['select', 'multiple', 'radio', 'checkbox'],
             placeholderWidget: ['input', 'textarea'],
@@ -183,31 +184,22 @@ export default {
         handleSelect(item) {
             this.selectedItem = item;
         },
+        //递归删除选定组件
+        deleteComponent(data, item, parent, index) {
+            if (data.id === item.id) {
+                parent.splice(index, 1);
+            }else if (Array.isArray(data)) {
+                data.map((child, index) => this.deleteComponent(child, item, data, index));
+            } else if (data.columns) {
+                Object.values(data.columns).map((child, index) => this.deleteComponent(child, item));
+            }
+        },
         //删除组件
         handleDelete(item) {
-            let formData1 = [];
-            this.formData.forEach((component, index) => {
-                if (component.id) {
-                    if (component.type === 'container') {
-                        if (component.id !== item.id) {
-                            for (let i in component.columns) {
-                                if (component.columns[i][0] && component.columns[i][0].id === item.id) {
-                                    component.columns[i] = [];
-                                }
-                            }
-                        }
-                    } else if (component.id !== item.id) {
-                        formData1.push(component);
-                    }
-                }
-            });
-            this.formData = formData1;
-            setTimeout(() => {
+            this.deleteComponent(this.data, item);
+            this.$nextTick(() => {
                 this.selectedItem = {};
-            }, 0);
-        },
-        handleBlur(event, item) {
-            item.value = event.target.value
+            })
         },
         //增加option选项
         handleAddOption() {

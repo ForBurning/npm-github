@@ -7,7 +7,7 @@
         </Poptip>
 
         <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :key="index" :inserted="handleInsert">
-            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect">
+            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete">
             </list>
         </vddl-list>
     </div>
@@ -140,10 +140,10 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" name="materielAttachmentFile" v-if="isDesign || isEdit">
+                <Upload :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
-                <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-else-if="item.url">{{item.name}}</a>
+                <a style="display:inline-block;" target="_blank" :href="encodeURIComponent(item.url)" class="file" v-else-if="item.url">{{item.name}}</a>
             </vddl-nodrag>
         </div>
     </div>
@@ -157,16 +157,12 @@
         <div class="component-content">
             <vddl-nodrag class="nodrag">
                 <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
-                <Select v-model="item.prepend" slot="prepend" style="width: 80px">
-                    <Option value="http://">http://</Option>
-                    <Option value="https://">https://</Option>
-                </Select>
                 <Select v-model="item.append" slot="append" style="width: 70px" v-show="item.hasSuffix === langs.show">
                     <Option value=".com">.com</Option>
                     <Option value=".cn">.cn</Option>
                 </Select>
                 </Input>
-                <div class="view-model" v-else>{{item.prepend}}{{item.model}}{{item.append}}</div>
+                <div class="view-model" v-else>{{item.model}}{{item.append}}</div>
             </vddl-nodrag>
         </div>
     </div>
@@ -179,8 +175,17 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign" />
-                <a target="_blank" style="display:block;" class="view-model" :href="item.model" v-else>{{item.model}}</a>
+                <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
+                    <Select v-model="item.prepend" slot="prepend" style="width: 80px">
+                        <Option value="http://">http://</Option>
+                        <Option value="https://">https://</Option>
+                    </Select>
+                    <Select v-model="item.append" slot="append" style="width: 70px" v-show="item.hasSuffix === langs.show">
+                        <Option value=".com">.com</Option>
+                        <Option value=".cn">.cn</Option>
+                    </Select>
+                </Input>
+                <a target="_blank" style="display:block;" class="view-model" :href="(item.prepend||'')+item.model+ (item.append||'')" v-else>{{item.prepend||''}}{{item.model}}{{item.append||''}}</a>
             </vddl-nodrag>
         </div>
     </div>
@@ -270,7 +275,7 @@ export default {
                 this.item.nameMapping.split('.').map(key => {
                     name = name[key];
                 })
-                this.item.name = name;
+                this.item.name = name.split('/').pop();
             }
 
             if (this.item.urlMapping) {

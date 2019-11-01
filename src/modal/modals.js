@@ -111,7 +111,6 @@ const getModals = langs => {
 			model: '',
 			title: langs.email,
 			placeholder: langs.inputPlaceholder,
-			prepend: 'http://',
 			append: '.com',
 			hasSuffix: langs.show,
 			suffixOptions: [langs.show, langs.hide],
@@ -122,6 +121,8 @@ const getModals = langs => {
 			type: 'link',
 			model: '',
 			title: langs.link,
+			prepend: 'http://',
+			append: '.com',
 			icon: 'ios-link-outline'
 		},
 		{
@@ -134,7 +135,8 @@ const getModals = langs => {
 			nameMapping: '',
 			urlMapping: '',
 			name: '',
-			url: ''
+			url: '',
+			fileName: 'materielAttachmentFile'
 		},
 	
 	]
