@@ -58,6 +58,7 @@ export default {
 |  langPackage | 自定义语言包  | Object  | {} |
 |  header | upload header参数  | Object  | {} | 
 |  mode | 表单模式  | String  | 默认design, 可选 edit, view | 
+|  hasColon | 是否显示':' | Boolean  | 默认false | 
 
 ##### Slot
 | 属性  | 说明  
