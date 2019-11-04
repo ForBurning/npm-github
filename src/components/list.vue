@@ -140,10 +140,10 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload ref="upload" :headers="uploadHeaders" show-upload-list :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
+                <Upload ref="upload" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
-                <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-if="item.url">{{item.name}}</a>
+                <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-if="item.url">{{item.realName}}</a>
             </vddl-nodrag>
         </div>
     </div>
@@ -269,6 +269,7 @@ export default {
         //文件上传成功
         onSuccess(response, file, fileList) {
             this.$refs.upload.clearFiles();
+            this.item.realName = file.name;
             if (this.item.nameMapping) {
                 let name = {};
                 Object.assign(name, response);

@@ -135,7 +135,8 @@ const getModals = langs => {
 			urlMapping: '',
 			name: '',
 			url: '',
-			fileName: 'materielAttachmentFile'
+			fileName: 'materielAttachmentFile',
+			realName: ''
 		},
 	
 	]
