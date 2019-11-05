@@ -447,6 +447,7 @@ export default {
         margin-top: 12px;
         float: right;
     }
+    //tes
     &:after {
         content: "";
         display: block;
