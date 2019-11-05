@@ -447,7 +447,7 @@ export default {
         margin-top: 12px;
         float: right;
     }
-    //test
+    //test 
     &:after {
         content: "";
         display: block;
