@@ -133,10 +133,9 @@ const getModals = langs => {
 			action: 'https://cimsmanage.ilabpower.com/Controls/UploadFileOrgan?folder=materielAttachment',
 			nameMapping: '',
 			urlMapping: '',
-			name: '',
-			url: '',
 			fileName: 'materielAttachmentFile',
-			realName: ''
+			realName: '',
+			defaultList: []
 		},
 	
 	]

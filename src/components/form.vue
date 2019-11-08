@@ -114,8 +114,8 @@
 
 <script>
 import Vue from "vue";
-import iView from "iview";
-import 'iview/dist/styles/iview.css';
+import iView from "view-design";
+import 'view-design/dist/styles/iview.css';
 Vue.use(iView);
 import Vddl from "vddl"
 Vue.use(Vddl);

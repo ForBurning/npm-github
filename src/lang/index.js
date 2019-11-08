@@ -40,6 +40,7 @@ const zh = {
     nameMapping: '文件名称映射',
     urlMapping: '文件地址映射',
     selectComponent: '请先选择控件',
+    urlMappingWarning: '上传控件的文件地址映射为空'
 }
 
 const en = {
@@ -84,6 +85,7 @@ const en = {
     nameMapping: 'name mapping',
     urlMapping: 'url mapping',
     selectComponent: 'please select component',
+    urlMappingWarning: 'url mapping is null'
 }
 
  function getLangs(lang){

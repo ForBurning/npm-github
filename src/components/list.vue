@@ -7,7 +7,7 @@
         </Poptip>
 
         <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :key="index" :inserted="handleInsert">
-            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete">
+            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
             </list>
         </vddl-list>
     </div>
@@ -140,10 +140,9 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload ref="upload" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
+                <Upload ref="upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
-                <a style="display:inline-block;" target="_blank" :href="item.url" class="file" v-if="item.url">{{item.realName}}</a>
             </vddl-nodrag>
         </div>
     </div>
@@ -268,7 +267,6 @@ export default {
     methods: {
         //文件上传成功
         onSuccess(response, file, fileList) {
-            this.$refs.upload.clearFiles();
             this.item.realName = file.name;
             if (this.item.nameMapping) {
                 let name = {};
@@ -276,7 +274,7 @@ export default {
                 this.item.nameMapping.split('.').map(key => {
                     name = name[key];
                 })
-                this.item.name = name.split('/').pop();
+                file.name = name.split('/').pop();
             }
 
             if (this.item.urlMapping) {
@@ -285,8 +283,10 @@ export default {
                 this.item.urlMapping.split('.').map(key => {
                     url = url[key];
                 })
-                this.item.url = /^\//.test(url) ? '/' + encodeURIComponent(url.substr(1))  : url;
+                file.url = url.replace(/#/g, '&#35;');
             }
+
+            this.item.defaultList = this.$refs.upload.fileList;
         },
         //文件上传失败
         onError(error, file, fileList) {
@@ -299,6 +299,23 @@ export default {
                 return false;
             }
             Object.assign(this.uploadHeaders, this.header());
+        },
+        //删除文件
+        onRemove(file){
+            this.item.defaultList = this.$refs.upload.fileList;
+        },
+        //点击已上传的文件
+        onPreview(file){
+            if (this.item.urlMapping) {
+                let url = {};
+                Object.assign(url, file.response);
+                this.item.urlMapping.split('.').map(key => {
+                    url = url[key];
+                })
+                window.open(url, '_blank');
+            }else{
+                this.$Message.warning(this.langs.urlMappingWarning);
+            }
         },
         //插入组件
         handleInsert(data) {
@@ -358,12 +375,16 @@ export default {
 
             .ivu-upload {
                 position: relative;
+                display: block;
 
                 .ivu-upload-list {
                     position: absolute;
                     top: 50%;
                     left: 90px;
                     margin-top: -12px;
+                    .ivu-upload-list-file{
+                        float: left;
+                    }
                 }
             }
         }
