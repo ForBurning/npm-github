@@ -1,6 +1,6 @@
 {
   "name": "@neotrident/neo-custom-form",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "自定义表单",
   "main": "dist/neoCustomForm.min.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "core-js": "^2.6.5",
     "file-loader": "^4.2.0",
     "intersection-observer": "^0.5.0",
-    "iview": "^3.5.1",
     "vddl": "^0.7.1",
+    "view-design": "^4.0.1",
     "vue": "^2.6.10",
     "vuebar": "^0.0.20"
   },
