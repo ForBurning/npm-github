@@ -16,3 +16,5 @@ import cookie from "./cookie";
 export {cookie};
 import md5 from "./md5";
 export {md5};
+import moment from "./moment"
+export {moment}
