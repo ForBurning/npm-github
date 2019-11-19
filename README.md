@@ -6,115 +6,119 @@
 	- 显示或隐藏列
 	- 导出表格数据到csv
 	- 支持静态或动态绑定数据
+	- 通过col.type格式化列（控件包括input, date, select, radio, checkbox, inputNumber等常用组件）
 	
 #### 待加功能
-	- 通过col.type格式化列（控件包括button，CheckBox，select，date等常用组件）
-	- 开启表格编辑功能
+	- 暂无
 #### 示图
 [![demo](https://raw.githubusercontent.com/ForBurning/vue-fly/master/table.png "demo")](https://raw.githubusercontent.com/ForBurning/vue-fly/master/table.png "demo")
 
 
 #### 安装方式
+	 <!--script引入 -->
      <script src="./neoTable.min.js"></script>
+	 
+	<!-- NPM 安装 -->
      npm install --save @neotrident/neo-table
     
 
 #### 示例
-
-   ```javascript
-<template>
-<div id="app">
-    <neo-table :columns="columns" :data="getData" ref="table" showExport resizable>
-        <span slot="tool-btns"></span>
-        <template slot-scope="{ row }" slot="name">
-            <Button>{{row.name}}</Button>
-        </template>
-    </neo-table>
-</div>
-</template>
-
+```javascript
 <script>
-import neoTable from './components/neoTable.vue'
-
+import neoTable from "@neotrident/neo-table"
 export default {
-    name: 'app',
-    components: {
-        neoTable
-    },
-    data() {
-        return {
-            exportOpts: {
-                columns: [{
-                        title: 'Age',
-                        key: 'age',
-                    },
-                    {
-                        title: 'Address',
-                        key: 'address',
-                    }
-                ]
-            },
-            columns: [{
-                    type: 'selection',
-                    width: 50
-                }, {
-                    title: 'Name',
-                    slot: 'name',
-                    visible: true,
-                    sortable: 'true'
-                },
-                {
-                    title: 'Age',
-                    key: 'age',
-                },
-                {
-                    title: 'Address',
-                    key: 'address',
-                }
-            ],
-            data: [{
-                    name: 'John Brown',
-                    age: 18,
-                    address: 'New York No. 1 Lake Park',
-                    date: '2016-10-03'
-                },
-                {
-                    name: 'Jim Green',
-                    age: 24,
-                    address: 'London No. 1 Lake Park',
-                    date: '2016-10-01'
-                },
-                {
-                    name: 'Joe Black',
-                    age: 30,
-                    address: 'Sydney No. 1 Lake Park',
-                    date: '2016-10-02'
-                },
-                {
-                    name: 'Jon Snow',
-                    age: 26,
-                    address: 'Ottawa No. 2 Lake Park',
-                    date: '2016-10-04'
-                }
-            ]
+  name: "App",
+  components: {
+    neoTable
+  },
+  data() {
+    return {
+      data: [
+        {
+          name: 'John Brown111',
+          sex: 1,
+          age: 18,
+          merried: [],
+          birthday: ''
+        },
+        {
+          name: 'Jim Green',
+          sex: 2,
+          age: 24,
+          merried: [],
+          birthday: ''
+        },
+        {
+          name: 'Joe Black',
+          sex: -1,
+          age: 30,
+          merried: ['已婚'],
+          birthday: '2019-09-25'
+        },
+        {
+          name: 'Joe Black',
+          sex: -1,
+          age: 30,
+          merried: ['已婚'],
+          birthday: '2019-09-25'
+        },
+        {
+          name: 'Joe Black',
+          sex: -1,
+          age: 30,
+          merried: ['已婚'],
+          birthday: '2019-09-25'
         }
-    },
-    methods: {
-        getData(d) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve({
-                        rows: this.data,
-                        total: 30
-                    })
-                }, 400)
-            })
+      ],
+      columns: [
+        {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+        },
+        {
+          title: '名称',
+          slot: 'name',
+          width:150
+        },
+        {
+          title: '性别',
+          slot: 'sex',
+          type:'select',
+          options:[{
+            label: '男',
+            value: 1
+          },{
+            label: '女',
+            value: 2
+          }]
+        },
+        {
+          title: '年龄',
+          slot: 'age',
+          type: 'input',
+          props: {
+            number: true
+          }
+        },
+        {
+          title: '婚姻状况',
+          slot: 'merried',
+          type: 'checkbox',
+          options:['已婚']
+        },
+        {
+          title: '生日',
+          slot: 'birthday',
+          type: 'date',
+          visible: true
         }
+      ]
     }
-}
+  }
+};
 </script>
 ```
-    
 #### API
 ##### Table Props
 | 属性  | 说明  | 类型    |    默认值    |
@@ -131,6 +135,9 @@ export default {
 | 属性  | 说明  | 类型    |    默认值    |
 | ------------ | ------------ | ------------ |  ------------    |
 |  visible | 列的显隐  | Boolean  | true  |
+|  type|列的格式化类型| String，可选input, date, select, radio, checkbox, inputNumber  | - |
+|  props | 列的props  | Object  | {}  |
+|  options | select, checkbox, radio等初始化数据  | Array  | []  |
 |  ...props | 其余列设置，见iview官网  |
 
 ##### Slot

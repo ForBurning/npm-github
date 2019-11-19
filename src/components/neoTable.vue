@@ -9,7 +9,7 @@
             <DropdownMenu slot="list">
                 <div class="neo-dropmenu">
                     <CellGroup>
-                        <Cell v-for="(item, index) in columns" :key="index" v-show="!item.hasOwnProperty('type')">
+                        <Cell v-for="(item, index) in columns" :key="index" v-show="item.type !== 'selection'">
                             <Checkbox :value="item.visible" @on-change="handleMenuChange($event, item, index)" :disabled="item.disabled">{{item.title}}</Checkbox>
                         </Cell>
                     </CellGroup>
@@ -19,8 +19,9 @@
         <slot name="tool-btns"></slot>
     </div>
     <Table :data="data1" :columns="columns1" v-bind="tableProps" ref="table">
-        <template slot-scope="{ row }" v-for="col in columns1" :slot="col.slot">
-            <slot :row="row" :name="col.slot" v-if="col.slot"></slot>
+        <template slot-scope="{ row, index }" v-for="col in slots" :slot="col.slot">
+            <neo-td :data="data1" :index="index" :row="row" :key="col.key" :col="col" v-if="col.hasOwnProperty('type')"></neo-td>
+            <slot :row="row" :name="col.slot" v-else></slot>
         </template>
     </Table>
     <Page v-if="pagination" :total="total1" @on-change="onChange" @on-page-size-change="onPageSizeChange" v-bind="$props"></Page>
@@ -32,8 +33,12 @@ import Vue from "vue";
 import iView from "iview";
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
+import neoTd from "./neoTd";
 export default {
     name: "neo-table",
+    components: {
+        neoTd
+    },
     props: {
         columns: {
             type: Array,
@@ -109,9 +114,9 @@ export default {
         },
         exportOpts: {
             type: Object,
-            default: ()=>{
+            default: () => {
                 return {
-                    filename:'table.csv',
+                    filename: 'table.csv',
                     columns: [],
                     noHeader: false,
                     original: true
@@ -158,9 +163,9 @@ export default {
             default: ''
         },
         //i18n
-        btnsTxt:{
+        btnsTxt: {
             type: Array,
-            default:()=>{
+            default: () => {
                 return ['导出', '列']
             }
         }
@@ -200,31 +205,30 @@ export default {
                 columns,
                 ...tableProps
             } = this.$props;
-            this.tableProps = tableProps
+            this.tableProps = tableProps;
         },
         //列显隐
         handleMenuChange(visible, item, index) {
             this.columns[index].visible = visible;
             this.columns1 = this.columns.filter(col => col.visible);
-            const highlightCbox = this.columns.filter(col => col.visible && !col.hasOwnProperty('type'));
-            console.log(highlightCbox.length);
-            
-            this.columns.map(col=>{
+            const highlightCbox = this.columns.filter(col => col.visible && col.type !== 'selection');
+
+            this.columns.map(col => {
                 if (highlightCbox.length === 1 && col.visible) {
                     col.disabled = true;
                 } else {
                     col.disabled = false;
                 }
             })
-            
-            this.removeColWid();
+
+            this.$delete(this.columns1[this.columns1.length -1 ], "width");
             this.$nextTick(() => {
-                this.setColProperty();
-                this.setColsWidth();
+                // this.addWidthToCol();
+                this.getColumnsWidth();
             })
         },
         //深拷贝
-        setColsWidth() {
+        getColumnsWidth() {
             const table = this.$refs.table;
             this.columnsWidth = this.deepCopy(table.columnsWidth);
         },
@@ -257,6 +261,7 @@ export default {
         },
         //为列增添resize-bar
         renderHeader() {
+            this.showHideCol = this.columns.some(col => col.hasOwnProperty('visible'));
             if (this.resizable) {
                 this.columns.map((column, index) => {
                     Object.assign(column, {
@@ -265,32 +270,39 @@ export default {
                     if (!column.hasOwnProperty('visible')) {
                         this.$set(column, "visible", true);
                     }
+
+                    this.$set(column, "hasInitWidth", column.hasOwnProperty('width'));
                 })
             }
             this.columns1 = this.deepCopy(this.columns.filter(col => col.visible !== false));
-            this.showHideCol = this.columns.some(col => col.hasOwnProperty('visible'));
         },
         //为列增加属性
-        setColProperty() {
+        addWidthToCol() {
             const table = this.$refs.table;
             this.columns1.map((column, index) => {
-                this.$set(column, "width", table.columnsWidth[index].width);
+                if (!column.hasInitWidth) {
+                    this.$set(column, "width", table.columnsWidth[index].width);
+                }
             })
         },
         //删除列宽
-        removeColWid(isSet = true) {
+        deleteWidthFromCol(isSet = true) {
             this.columns1.map((column, index) => {
-                if (!column.hasOwnProperty('type')) {
-                    delete column.width
+                if (!column.hasInitWidth) {
+                    this.$delete(column, "width");
                 }
             })
         },
         //拖动开始前
         handleMousedown(e, movingIndex) {
+            console.log(movingIndex);
+            
             this.moving = true;
             this.movingIndex = movingIndex;
             this.movingStartX = e.clientX;
             document.onmousemove = this.handleMouseMove;
+            this.addWidthToCol();
+            this.getColumnsWidth();
         },
         //拖动开始
         handleMouseMove(e) {
@@ -302,7 +314,7 @@ export default {
         //拖动结束
         handleMouseup() {
             this.moving = false;
-            this.setColsWidth();
+            this.getColumnsWidth();
         },
         //页码
         onChange(pageIndex) {
@@ -344,23 +356,21 @@ export default {
             this.$refs.table.selectAll(state);
         },
         //导出数据
-        exportCsv(){
+        exportCsv() {
             let data = this.getSelection();
             data = data.length ? data : this.data1;
             let columns = this.exportOpts.columns.length ? this.exportOpts.columns : this.columns;
-            let params = Object.assign({}, this.exportOpts, {data, columns});
+            let params = Object.assign({}, this.exportOpts, {
+                data,
+                columns
+            });
             this.$refs.table.exportCsv(params);
         },
         //通过外部方法获取数据
-        async fetchData({
-            pageIndex = 1,
-            pageSize = 10
-        }) {
+        async fetchData({pageIndex = 1,pageSize = 10}) {
             this.loading = true;
-            const resp = await this.data({
-                pageIndex,
-                pageSize
-            });
+            const resp = await this.data({pageIndex,pageSize});
+            
             this.data1 = resp[this.mapping.rows];
             this.total1 = resp[this.mapping.total];
             this.loading = false;
@@ -379,13 +389,19 @@ export default {
                     }
                 };
             }
-        })()
+        })(),
+        handleResize(){
+            this.deleteWidthFromCol();
+        }
     },
-    mounted () {
-        this.setColProperty();
-        this.setColsWidth();
-        this.$refs.table.handleResize();
-        this.on(window, 'resize', this.$refs.table.handleResize);
+    computed: {
+        slots: function () {
+            return this.columns1.filter(col => col.slot);
+        }
+    },
+    mounted() {
+        this.getColumnsWidth();
+        this.on(window, 'resize', this.handleResize);
     }
 };
 </script>
@@ -413,6 +429,7 @@ export default {
 
         .ivu-cell {
             text-align: left;
+            padding: 5px 16px;
         }
 
         >button,
