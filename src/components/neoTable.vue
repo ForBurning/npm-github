@@ -1,5 +1,5 @@
 <template>
-<div class="neo-table" @mousemove="handleMouseMove" @mouseup="handleMouseup">
+<div class="neo-table" @mousemove="handleMouseMove" @mouseup="handleMouseup" :class="{'none-select': moving}">
     <div class="tool-bar">
         <Button icon="md-download" :title="btnsTxt[0]" @click="exportCsv" v-if="showExport"></Button>
         <Dropdown trigger="click" placement="bottom-end" v-if="showHideCol">
@@ -34,6 +34,7 @@ import iView from "iview";
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
 import neoTd from "./neoTd";
+import {fun} from "@neotrident/utils"
 export default {
     name: "neo-table",
     components: {
@@ -295,7 +296,7 @@ export default {
         },
         //拖动开始前
         handleMousedown(e, movingIndex) {
-            console.log(movingIndex);
+            console.log(fun);
             
             this.moving = true;
             this.movingIndex = movingIndex;
@@ -307,8 +308,10 @@ export default {
         //拖动开始
         handleMouseMove(e) {
             if (this.moving) {
-                let width = e.clientX - this.movingStartX + this.columnsWidth[this.movingIndex].width;
-                this.columns1[this.movingIndex].width = width;
+                fun.throttle(()=>{
+                    let width = e.clientX - this.movingStartX + this.columnsWidth[this.movingIndex].width;
+                    this.columns1[this.movingIndex].width = width;
+                }, 100)()
             }
         },
         //拖动结束
@@ -409,6 +412,13 @@ export default {
 <style lang="less">
 .neo-table {
     position: relative;
+
+    &.none-select {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 
     .tool-bar {
         float: right;

@@ -8,8 +8,8 @@
 	- 支持静态或动态绑定数据
 	- 通过col.type格式化列（控件包括input, date, select, radio, checkbox, inputNumber等常用组件）
 	
-#### 待加功能
-	- 暂无
+#### 更新日志
+	- 优化拖动性能和手感
 #### 示图
 [![demo](https://raw.githubusercontent.com/ForBurning/vue-fly/master/table.png "demo")](https://raw.githubusercontent.com/ForBurning/vue-fly/master/table.png "demo")
 
