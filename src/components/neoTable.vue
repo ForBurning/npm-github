@@ -33,8 +33,10 @@ import Vue from "vue";
 import iView from "iview";
 import 'iview/dist/styles/iview.css';
 Vue.use(iView)
-import neoTd from "./neoTd";
-import {fun} from "@neotrident/utils"
+import neoTd from "./neoTd.vue";
+import {
+    fun
+} from "@neotrident/utils"
 export default {
     name: "neo-table",
     components: {
@@ -222,7 +224,7 @@ export default {
                 }
             })
 
-            this.$delete(this.columns1[this.columns1.length -1 ], "width");
+            this.$delete(this.columns1[this.columns1.length - 1], "width");
             this.$nextTick(() => {
                 // this.addWidthToCol();
                 this.getColumnsWidth();
@@ -263,18 +265,20 @@ export default {
         //为列增添resize-bar
         renderHeader() {
             this.showHideCol = this.columns.some(col => col.hasOwnProperty('visible'));
-            if (this.resizable) {
-                this.columns.map((column, index) => {
+
+            this.columns.map((column, index) => {
+                if (this.resizable) {
                     Object.assign(column, {
                         renderHeader: this.initResizeBar
                     });
-                    if (!column.hasOwnProperty('visible')) {
-                        this.$set(column, "visible", true);
-                    }
+                }
 
-                    this.$set(column, "hasInitWidth", column.hasOwnProperty('width'));
-                })
-            }
+                if (!column.hasOwnProperty('visible')) {
+                    this.$set(column, "visible", true);
+                }
+
+                this.$set(column, "hasInitWidth", column.hasOwnProperty('width'));
+            })
             this.columns1 = this.deepCopy(this.columns.filter(col => col.visible !== false));
         },
         //为列增加属性
@@ -296,8 +300,6 @@ export default {
         },
         //拖动开始前
         handleMousedown(e, movingIndex) {
-            console.log(fun);
-            
             this.moving = true;
             this.movingIndex = movingIndex;
             this.movingStartX = e.clientX;
@@ -308,7 +310,7 @@ export default {
         //拖动开始
         handleMouseMove(e) {
             if (this.moving) {
-                fun.throttle(()=>{
+                fun.throttle(() => {
                     let width = e.clientX - this.movingStartX + this.columnsWidth[this.movingIndex].width;
                     this.columns1[this.movingIndex].width = width;
                 }, 100)()
@@ -370,30 +372,36 @@ export default {
             this.$refs.table.exportCsv(params);
         },
         //通过外部方法获取数据
-        async fetchData({pageIndex = 1,pageSize = 10}) {
+        async fetchData({
+            pageIndex = 1,
+            pageSize = 10
+        }) {
             this.loading = true;
-            const resp = await this.data({pageIndex,pageSize});
-            
+            const resp = await this.data({
+                pageIndex,
+                pageSize
+            });
+
             this.data1 = resp[this.mapping.rows];
             this.total1 = resp[this.mapping.total];
             this.loading = false;
         },
-        on: (function() {
+        on: (function () {
             if (document.addEventListener) {
-                return function(element, event, handler) {
+                return function (element, event, handler) {
                     if (element && event && handler) {
                         element.addEventListener(event, handler, false);
                     }
                 };
             } else {
-                return function(element, event, handler) {
+                return function (element, event, handler) {
                     if (element && event && handler) {
                         element.attachEvent('on' + event, handler);
                     }
                 };
             }
         })(),
-        handleResize(){
+        handleResize() {
             this.deleteWidthFromCol();
         }
     },
