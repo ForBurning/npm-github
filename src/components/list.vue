@@ -1,7 +1,7 @@
 <template>
 <vddl-draggable class="form-row-item" :draggable="item" :index="index" :disable-if="isEdit || isView" :wrapper="list" :selected="handleSelect" :class="{'form-row-item-active': selectedItem.id == item.id && isDesign, isContainer: item.type === 'container'}">
     <!-- 布局控件 -->
-    <div class="component container-row-item" v-if="item.type === 'container'" :class="{'form-row-item-active': item.hasOwnProperty('columns') && isDesign}">
+    <div class="component container-row-item" v-if="item.type === 'container2' || item.type === 'container3'" :class="{'form-row-item-active': item.hasOwnProperty('columns') && isDesign}">
         <Poptip class="remove-btn" v-if="isDesign" confirm="" :title="langs.removeConfirm" placement="top-end" @on-ok="handleDelete(item)" transfer>
             <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
         </Poptip>

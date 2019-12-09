@@ -5,7 +5,7 @@ const getContainers = langs => {
 	return [
 		{
 			id: 1,
-			type: 'container',
+			type: 'container2',
 			columns: {
 				l: [],
 				r: []
@@ -14,7 +14,7 @@ const getContainers = langs => {
 		},
 		{
 			id: 5000,
-			type: 'container',
+			type: 'container3',
 			columns: {
 				l: [],
 				m: [],
