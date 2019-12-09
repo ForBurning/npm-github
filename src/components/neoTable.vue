@@ -410,6 +410,16 @@ export default {
             return this.columns1.filter(col => col.slot);
         }
     },
+    watch:{
+        data:{
+            handler(){
+                setTimeout(() => {
+                    this.data1 = this.data;
+                }, 0);
+            },
+            deep: true
+        }
+    },
     mounted() {
         this.getColumnsWidth();
         this.on(window, 'resize', this.handleResize);

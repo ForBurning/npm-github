@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const uglify = require("uglifyjs-webpack-plugin");
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
@@ -52,6 +53,7 @@ module.exports = {
             "process.env": {
                 NODE_ENV: JSON.stringify("production")
             }
-        })
+        }),
+        new CleanWebpackPlugin()
     ]
 }
