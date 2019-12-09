@@ -195,3 +195,26 @@ export const removeItem = (arr, item) => {
     })
   }
 }
+
+/**
+ * 根据条件编辑数组中指定的元素
+ * @function eidtItem
+ * @param {array} arr - 数组
+ * @param {object} item - 新元素
+ * @param {string} key - 比较的key
+ * @return {array}
+ * @example
+ * const arr = [{a: 1, b: 2}, {a: 2, b: 4}]
+ * 
+ * U.eidtItem(arr, {a: 1, b: 666}, 'a')
+ * // => [{a: 1, b: 666}, {a: 2, b: 4}]
+ */
+export const editItem = (array, item, key)=> {
+  if (isObject(item)) {
+    array.map((arr, index) => {
+      if (arr[key] === item[key]) {
+        Object.assign(arr, {...item});
+      }
+    })
+  }
+}
