@@ -97,6 +97,17 @@
                         <div class="sub-title">{{langs.urlMapping}}（eg: .a.b）</div>
                         <Input type="text" v-model="selectedItem.urlMapping" />
                     </div>
+
+                    <div class="widget-option" v-if="selectedItem.type==='target'">
+                        <div class="sub-title">{{langs.actionTxt}}</div>
+                        <Input type="text" v-model="selectedItem.action" />
+                        <div class="sub-title">fileName</div>
+                        <Input type="text" v-model="selectedItem.fileName" />
+                        <div class="sub-title">{{langs.nameMapping}}（eg: .a.b）</div>
+                        <Input type="text" v-model="selectedItem.nameMapping" />
+                        <div class="sub-title">{{langs.urlMapping}}（eg: .a.b）</div>
+                        <Input type="text" v-model="selectedItem.urlMapping" />
+                    </div>
                 </div>
                 <div v-else>
                     <Alert type="warning" show-icon>

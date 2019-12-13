@@ -23,7 +23,7 @@ const zh = {
     container13: '一行三列布局',
     removeConfirm: '您确认删除这个组件吗？',
     remove: '删除组件',
-    upload: '上传',
+    upload: '上传附件',
     uploaderFail: '上传失败！',
     actionWarning: '请先填写该附件的上传地址',
     fieldsTxt: '字段控件',
@@ -40,7 +40,11 @@ const zh = {
     nameMapping: '文件名称映射',
     urlMapping: '文件地址映射',
     selectComponent: '请先选择控件',
-    urlMappingWarning: '上传控件的文件地址映射为空'
+    urlMappingWarning: '上传控件的文件地址映射为空',
+    target: '复杂指标',
+    targetPlaceholder1: '平均值',
+    targetPlaceholder2: '标准差',
+    targetPlaceholder3: '对应阳性数据',
 }
 
 const en = {
@@ -85,7 +89,11 @@ const en = {
     nameMapping: 'name mapping',
     urlMapping: 'url mapping',
     selectComponent: 'please select component',
-    urlMappingWarning: 'url mapping is null'
+    urlMappingWarning: 'url mapping is null',
+    target: 'target',
+    targetPlaceholder1: 'average value',
+    targetPlaceholder2: 'standard deviation',
+    targetPlaceholder3: 'corresponding positive data',
 }
 
  function getLangs(lang){

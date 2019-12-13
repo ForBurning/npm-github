@@ -189,6 +189,28 @@
         </div>
     </div>
 
+    <!-- 复杂指标组件 -->
+    <div class="component" v-else-if='item.type === "target"'>
+        <div class="component-title">
+            {{item.title}}
+            <c v-if="hasColon">：</c>
+        </div>
+        <div class="component-content">
+            <vddl-nodrag class="nodrag">
+                <div v-if="isDesign || isEdit">
+                    <Input v-model="item.model1" :placeholder="item.placeholder1" style="width: 120px" /> 
+                    <span style="margin: 0 6px;">±</span>
+                    <Input v-model="item.model2" :placeholder="item.placeholder2" style="width: 100px" />
+                    <Input v-model="item.model3" :placeholder="item.placeholder3"  style="width: 120px;margin:0 12px 0 18px;" />
+                    <Upload ref="upload" class="target-upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName">
+                        <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
+                    </Upload>
+                </div>
+                
+            </vddl-nodrag>
+        </div>
+    </div>
+
     <!-- 删除组件 -->
     <Poptip v-if='item.type !== "container" && isDesign' class="remove-btn" confirm="" :title="langs.removeConfirm" width="184" placement="top-end" @on-ok="handleDelete(item)" transfer>
         <Icon type="ios-trash-outline widget-trash" :title="langs.remove"></Icon>
@@ -386,6 +408,10 @@ export default {
                         float: left;
                     }
                 }
+            }
+
+            .target-upload{
+                display: inline-block;
             }
         }
 
