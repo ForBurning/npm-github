@@ -39,7 +39,7 @@
         </div>
         </Col>
         <Col class="right-section" v-if="isDesign">
-        <Tabs>
+        <Tabs v-model="tabIndex" size="small">
             <TabPane :label="langs.setting" name="1">
                 <div v-if="selectedItem.id">
                     <div class="widget-option" v-if="selectedItem.id">
@@ -117,6 +117,30 @@
                     </Alert>
                 </div>
             </TabPane>
+            <TabPane label="方法设置" name="2">
+                <Form :model="fnSetting" :rules="fnRules" label-position="top">
+                    <FormItem label="方法编号">
+                        <Input :value="fnSetting.Code" disabled placeholder="编号系统自动生成" />
+                    </FormItem>
+                    <FormItem label="方法名称" prop="Name">
+                        <Input v-model="fnSetting.Name" placeholder="请填写方法名称" />
+                    </FormItem>
+                    <FormItem label="版本号" prop="Version">
+                        <Input v-model="fnSetting.Version" placeholder="请填写版本号" />
+                    </FormItem>
+                    <FormItem label="测试类型" placeholder="请选择版本号">
+                        <Select v-model="fnSetting.Type">
+                            <Option v-for="item in testTypes" :key="item.value" v-model="item.value">{{item.name}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="标签" placeholder="请填写标签">
+                        <Input v-model="fnSetting.Label" />
+                    </FormItem>
+                    <FormItem label="方法说明" placeholder="请填写方法说明">
+                        <Input v-model="fnSetting.Comments" />
+                    </FormItem>
+                </Form>
+            </TabPane>
         </Tabs>
         </Col>
     </Row>
@@ -169,6 +193,23 @@ export default {
         hasColon: {
             type: Boolean,
             default: false
+        },
+        fnSetting: {
+            type: Object,
+            default: () => {
+                return {
+                    Comments: '',
+                    Label: '',
+                    Name: '',
+                    Type: [],
+                    Version: '',
+                    Code: '',
+                }
+            }
+        },
+        testTypes: {
+            type: Array,
+            default: () => []
         }
     },
     data() {
@@ -179,7 +220,18 @@ export default {
             langs: {},
             containers: {},
             modals: {},
-            isDesign: this.mode === 'design'
+            isDesign: this.mode === 'design',
+            tabIndex: '1',
+            fnRules: {
+                Name: [{
+                    required: true,
+                    message: ' '
+                }],
+                Version: [{
+                    required: true,
+                    message: ' '
+                }]
+            },
         }
     },
     components: {
@@ -194,12 +246,13 @@ export default {
         //选中组件
         handleSelect(item) {
             this.selectedItem = item;
+            this.tabIndex = "1";
         },
         //递归删除选定组件
         deleteComponent(data, item, parent, index) {
             if (data.id === item.id) {
                 parent.splice(index, 1);
-            }else if (Array.isArray(data)) {
+            } else if (Array.isArray(data)) {
                 data.map((child, index) => this.deleteComponent(child, item, data, index));
             } else if (data.columns) {
                 Object.values(data.columns).map((child, index) => this.deleteComponent(child, item));
@@ -266,7 +319,7 @@ body {
                     border: 1px dashed #999;
                     padding: 5px 5px 5px 15px;
                     border-radius: 2px;
-                    transition: background .15s ease-in-out;
+                    transition: background 0.15s ease-in-out;
                     background-color: #f5f5f5;
                     position: relative;
                     z-index: 100;
@@ -280,7 +333,6 @@ body {
                     }
                 }
             }
-
         }
 
         .middle-section {
@@ -295,7 +347,7 @@ body {
 
                 &.shadow {
                     border: 1px solid #ccc;
-                    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+                    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
                 }
 
                 .form {
@@ -336,7 +388,6 @@ body {
                     }
                 }
             }
-
         }
 
         .right-section {
@@ -355,6 +406,19 @@ body {
                     font-size: 12px;
                     font-weight: normal;
                 }
+            }
+
+            .ivu-tabs-nav .ivu-tabs-tab {
+                font-size: 12px;
+                margin: 0;
+            }
+
+            .ivu-form-label-top .ivu-form-item-label {
+                padding: 0;
+            }
+
+            .ivu-form-item {
+                margin-bottom: 0;
             }
         }
     }
