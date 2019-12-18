@@ -307,7 +307,7 @@ export default {
             this.item.defaultList = this.$refs.upload.fileList;
         },
         openFile(url){
-            window.open(url.replace(/#/g, '&#35;'), '_blank');
+            window.open(url.replace(/#/g, '%23'), '_blank');
         },
         //点击已上传的文件
         onPreview(file) {
