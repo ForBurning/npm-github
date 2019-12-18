@@ -226,7 +226,7 @@ export default {
                 "multiple"
             ],
             langs: {},
-            modals:{},
+            attachmentModal:{},
             isDesign: this.mode === 'design',
             isEdit: this.mode === 'edit',
             isView: this.mode === 'view',
@@ -296,10 +296,6 @@ export default {
         },
         //上传文件之前
         beforeUpload() {
-            if (!this.item.action) {
-                this.$Message.warning(this.langs.actionWarning);
-                return false;
-            }
             Object.assign(this.uploadHeaders, this.header());
         },
         //删除文件
@@ -338,8 +334,7 @@ export default {
         formatOldFileData(data) {
             if (data.model && typeof data.model === 'string') {
                 const name = data.model.split('/').pop();
-                const attachmentModal = this.modals.pop();
-                const {model, defaultList, ...attachmentModalFields} = attachmentModal;
+                const {model, defaultList, ...attachmentModalFields} = this.attachmentModal;
                 Object.assign(defaultList, {
                     name,
                     response:{
@@ -357,9 +352,11 @@ export default {
     },
     created() {
         this.langs = getLangs(this.lang);
-        this.modals = getModals(this.langs);
-
+        this.attachmentModal = getModals(this.langs).pop();
+        
         if (this.item.type === 'attachment') {
+            this.item.action = this.item.action || this.attachmentModal.action;
+            this.item.fileName = this.item.fileName || this.attachmentModal.fileName;
             this.formatOldFileData(this.item);
         }
     }
