@@ -117,7 +117,7 @@
                     </Alert>
                 </div>
             </TabPane>
-            <TabPane label="方法设置" name="2">
+            <TabPane label="方法设置" name="2" v-if="showFnSetting">
                 <Form :model="fnSetting" :rules="fnRules" label-position="top">
                     <FormItem label="方法编号">
                         <Input :value="fnSetting.Code" disabled placeholder="编号系统自动生成" />
@@ -210,6 +210,10 @@ export default {
         testTypes: {
             type: Array,
             default: () => []
+        },
+        showFnSetting:{
+            type: Boolean,
+            default: false
         }
     },
     data() {
