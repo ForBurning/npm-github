@@ -140,7 +140,7 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload ref="upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" v-if="isDesign || isEdit">
+                <Upload ref="upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" :class="{'view-mode': isView}">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
             </vddl-nodrag>
@@ -175,14 +175,14 @@
         <div class="component-content">
             <vddl-nodrag class="nodrag">
                 <Input v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
-                    <Select v-model="item.prepend" slot="prepend" style="width: 80px">
-                        <Option value="http://">http://</Option>
-                        <Option value="https://">https://</Option>
-                    </Select>
-                    <Select v-model="item.append" slot="append" style="width: 70px">
-                        <Option value=".com">.com</Option>
-                        <Option value=".cn">.cn</Option>
-                    </Select>
+                <Select v-model="item.prepend" slot="prepend" style="width: 80px">
+                    <Option value="http://">http://</Option>
+                    <Option value="https://">https://</Option>
+                </Select>
+                <Select v-model="item.append" slot="append" style="width: 70px">
+                    <Option value=".com">.com</Option>
+                    <Option value=".cn">.cn</Option>
+                </Select>
                 </Input>
                 <a target="_blank" style="display:block;" class="view-model" :href="(item.prepend||'')+item.model+ (item.append||'')" v-else>{{item.prepend||''}}{{item.model}}{{item.append||''}}</a>
             </vddl-nodrag>
@@ -225,6 +225,7 @@ import VueLazyComponent from '@xunlei/vue-lazy-component'
 Vue.use(VueLazyComponent)
 import uuidv1 from 'uuid/v1'
 import getLangs from "../lang";
+import getModals from "../modal/modals";
 
 export default {
     name: "list",
@@ -247,6 +248,7 @@ export default {
                 "multiple"
             ],
             langs: {},
+            modals:{},
             isDesign: this.mode === 'design',
             isEdit: this.mode === 'edit',
             isView: this.mode === 'view',
@@ -305,7 +307,7 @@ export default {
                 this.item.urlMapping.split('.').map(key => {
                     url = url[key];
                 })
-                file.url = url.replace(/#/g, '&#35;');
+                file.url = url;
             }
 
             this.item.defaultList = this.$refs.upload.fileList;
@@ -323,20 +325,23 @@ export default {
             Object.assign(this.uploadHeaders, this.header());
         },
         //删除文件
-        onRemove(file){
+        onRemove(file) {
             this.item.defaultList = this.$refs.upload.fileList;
         },
+        openFile(url){
+            window.open(url.replace(/#/g, '&#35;'), '_blank');
+        },
         //点击已上传的文件
-        onPreview(file){
+        onPreview(file) {
             if (this.item.urlMapping) {
                 let url = {};
                 Object.assign(url, file.response);
                 this.item.urlMapping.split('.').map(key => {
                     url = url[key];
                 })
-                window.open(url, '_blank');
-            }else{
-                this.$Message.warning(this.langs.urlMappingWarning);
+                this.openFile(url);
+            } else {
+                this.openFile(file.response.ResponseBody);
             }
         },
         //插入组件
@@ -350,10 +355,35 @@ export default {
         //删除组件
         handleDelete(item) {
             this.$emit("handleDelete", item);
+        },
+        //兼容附件老数据
+        formatOldFileData(data) {
+            if (data.model && typeof data.model === 'string') {
+                const name = data.model.split('/').pop();
+                const attachmentModal = this.modals.pop();
+                const {model, defaultList, ...attachmentModalFields} = attachmentModal;
+                Object.assign(defaultList, {
+                    name,
+                    response:{
+                        ResponseBody: data.model
+                    },
+                    url: data.model
+                }) 
+
+                Object.assign(this.item, {
+                    ...attachmentModalFields,
+                    defaultList
+                })
+            }
         }
     },
     created() {
         this.langs = getLangs(this.lang);
+        this.modals = getModals(this.langs);
+
+        if (this.item.type === 'attachment') {
+            this.formatOldFileData(this.item);
+        }
     }
 };
 </script>
@@ -398,13 +428,18 @@ export default {
             .ivu-upload {
                 position: relative;
                 display: block;
+                float: left;
+
+                &.view-mode {
+                    .ivu-upload-select {
+                        display: none;
+                    }
+                }
 
                 .ivu-upload-list {
-                    position: absolute;
-                    top: 50%;
-                    left: 90px;
-                    margin-top: -12px;
-                    .ivu-upload-list-file{
+                    float: left;
+
+                    .ivu-upload-list-file {
                         float: left;
                     }
                 }
