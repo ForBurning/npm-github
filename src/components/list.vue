@@ -48,7 +48,7 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Select v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit">
+                <Select v-model="item.model" :placeholder="item.placeholder" v-if="isDesign || isEdit" transfer>
                     <Option v-for="m in item.value" :value="m.value" :key="m.label">{{ m.label }}</Option>
                 </Select>
                 <div class="view-model" v-else>{{item.value.filter(s=>s.value === item.model).length ? item.value.filter(s=>s.value === item.model)[0].label : ''}}</div>
@@ -64,7 +64,7 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Select v-model="item.model" multiple="" :placeholder="item.placeholder" v-if="isDesign || isEdit">
+                <Select v-model="item.model" multiple="" :placeholder="item.placeholder" v-if="isDesign || isEdit" transfer>
                     <Option v-for="m in item.value" :value="m.value" :key="m.label">{{ m.label }}</Option>
                 </Select>
                 <div class="view-model" v-else>{{item.model.join(',')}}</div>
@@ -112,7 +112,7 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <DatePicker @on-change="item.model=$event" v-model="item.model" type="date" :format="item.format" :placeholder="item.placeholder" v-if="isDesign || isEdit"></DatePicker>
+                <DatePicker @on-change="item.model=$event" v-model="item.model" type="date" :format="item.format" :placeholder="item.placeholder" v-if="isDesign || isEdit" transfer></DatePicker>
                 <div class="view-model" v-else>{{item.model}}</div>
             </vddl-nodrag>
         </div>
