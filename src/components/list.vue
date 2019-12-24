@@ -197,16 +197,21 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <div v-if="isDesign || isEdit">
-                    <Input v-model="item.model1" :placeholder="item.placeholder1" style="width: 120px" /> 
-                    <span style="margin: 0 6px;">±</span>
+                <span v-if="isDesign || isEdit" class="target-span">
+                    <Input v-model="item.model1" :placeholder="item.placeholder1" style="width: 120px" />
+                    <span class="plus-span">±</span>
                     <Input v-model="item.model2" :placeholder="item.placeholder2" style="width: 100px" />
-                    <Input v-model="item.model3" :placeholder="item.placeholder3"  style="width: 120px;margin:0 12px 0 18px;" />
-                    <Upload ref="upload" class="target-upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName">
-                        <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
-                    </Upload>
-                </div>
-                
+                    <Input v-model="item.model3" :placeholder="item.placeholder3" style="width: 120px;margin:0 12px 0 18px;" />
+                </span>
+                <span v-else class="target-span">
+                    <span style="width: 120px;display:inline-block;">{{item.model1}}11</span>
+                    <span class="plus-span">±</span>
+                    <span style="width: 100px;display:inline-block;">{{item.model2}}22</span>
+                    <span style="width: 120px;display:inline-block;margin:0 12px 0 18px;">{{item.model3}}33</span>
+                </span>
+                <Upload ref="upload" class="target-upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" :class="{'view-mode': isView}">
+                    <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
+                </Upload>
             </vddl-nodrag>
         </div>
     </div>
@@ -248,7 +253,7 @@ export default {
                 "multiple"
             ],
             langs: {},
-            modals:{},
+            modals: {},
             isDesign: this.mode === 'design',
             isEdit: this.mode === 'edit',
             isView: this.mode === 'view',
@@ -328,7 +333,7 @@ export default {
         onRemove(file) {
             this.item.defaultList = this.$refs.upload.fileList;
         },
-        openFile(url){
+        openFile(url) {
             window.open(url.replace(/#/g, '%23'), '_blank');
         },
         //点击已上传的文件
@@ -361,14 +366,18 @@ export default {
             if (data.model && typeof data.model === 'string') {
                 const name = data.model.split('/').pop();
                 const attachmentModal = this.modals.pop();
-                const {model, defaultList, ...attachmentModalFields} = attachmentModal;
+                const {
+                    model,
+                    defaultList,
+                    ...attachmentModalFields
+                } = attachmentModal;
                 Object.assign(defaultList, {
                     name,
-                    response:{
+                    response: {
                         ResponseBody: data.model
                     },
                     url: data.model
-                }) 
+                })
 
                 Object.assign(this.item, {
                     ...attachmentModalFields,
@@ -425,6 +434,17 @@ export default {
                 text-align: left;
             }
 
+            .target-span {
+                float: left;
+                height: 32px;
+                line-height: 32px;
+                display: block;
+                
+                .plus-span{
+                    margin: 0 6px;
+                }
+            }
+
             .ivu-upload {
                 position: relative;
                 display: block;
@@ -445,8 +465,11 @@ export default {
                 }
             }
 
-            .target-upload{
+            .target-upload {
                 display: inline-block;
+                .ivu-upload{
+                    margin-right: 6px;
+                }
             }
         }
 
