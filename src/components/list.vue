@@ -226,7 +226,7 @@ export default {
                 "multiple"
             ],
             langs: {},
-            attachmentModal:{},
+            attachmentModal: {},
             isDesign: this.mode === 'design',
             isEdit: this.mode === 'edit',
             isView: this.mode === 'view',
@@ -269,7 +269,6 @@ export default {
     methods: {
         //文件上传成功
         onSuccess(response, file, fileList) {
-            this.item.realName = file.name;
             if (this.item.nameMapping) {
                 let name = {};
                 Object.assign(name, response);
@@ -302,7 +301,7 @@ export default {
         onRemove(file) {
             this.item.defaultList = this.$refs.upload.fileList;
         },
-        openFile(url){
+        openFile(url) {
             window.open(url.replace(/#/g, '%23'), '_blank');
         },
         //点击已上传的文件
@@ -315,7 +314,7 @@ export default {
                 })
                 this.openFile(url);
             } else {
-                this.openFile(file.response.ResponseBody);
+                this.openFile(file.response.ResponseBody || file.response.response);
             }
         },
         //插入组件
@@ -334,14 +333,18 @@ export default {
         formatOldFileData(data) {
             if (data.model && typeof data.model === 'string') {
                 const name = data.model.split('/').pop();
-                const {model, defaultList, ...attachmentModalFields} = this.attachmentModal;
+                const {
+                    model,
+                    defaultList,
+                    ...attachmentModalFields
+                } = this.attachmentModal;
                 Object.assign(defaultList, {
                     name,
-                    response:{
+                    response: {
                         ResponseBody: data.model
                     },
                     url: data.model
-                }) 
+                })
 
                 Object.assign(this.item, {
                     ...attachmentModalFields,
@@ -353,7 +356,7 @@ export default {
     created() {
         this.langs = getLangs(this.lang);
         this.attachmentModal = getModals(this.langs).pop();
-        
+
         if (this.item.type === 'attachment') {
             this.item.action = this.item.action || this.attachmentModal.action;
             this.item.fileName = this.item.fileName || this.attachmentModal.fileName;
@@ -406,8 +409,14 @@ export default {
                 float: left;
 
                 &.view-mode {
-                    .ivu-upload-select {
+
+                    .ivu-upload-select,
+                    .ivu-upload-list-remove {
                         display: none;
+                    }
+
+                    .ivu-upload-list{
+                        margin-top: 0;
                     }
                 }
 
