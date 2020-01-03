@@ -1,6 +1,6 @@
 {
   "name": "@neotrident/utils",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "utils",
   "main": "dist/utils.min.js",
   "scripts": {
