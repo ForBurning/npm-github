@@ -7,7 +7,7 @@
         </Poptip>
 
         <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :key="index" :inserted="handleInsert">
-            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
+            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :domain="domain" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
             </list>
         </vddl-list>
     </div>
@@ -16,7 +16,7 @@
     <div class="component" v-if='item.type === "input"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -30,7 +30,7 @@
     <div class="component" v-else-if='item.type === "textarea"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -44,7 +44,7 @@
     <div class="component" v-else-if='item.type === "select"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -60,7 +60,7 @@
     <div class="component" v-else-if='item.type === "multiple"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -76,7 +76,7 @@
     <div class="component" v-else-if='item.type === "radio"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -92,7 +92,7 @@
     <div class="component" v-else-if='item.type === "checkbox"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -108,7 +108,7 @@
     <div class="component" v-else-if='item.type === "date"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -122,7 +122,7 @@
     <div class="component" v-else-if='item.type === "inputNumber"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -136,7 +136,7 @@
     <div class="component" v-else-if='item.type === "attachment"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
@@ -151,7 +151,7 @@
     <div class="component" v-else-if='item.type === "email"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -170,7 +170,7 @@
     <div class="component" v-else-if='item.type === "link"'>
         <div class="component-title">
             {{item.title}}
-            <c v-if="hasColon">：</c>
+            <span v-if="hasColon">：</span>
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
@@ -264,6 +264,10 @@ export default {
         hasColon: {
             type: Boolean,
             default: false
+        },
+        domain:{
+           type: String,
+           default: () => {} 
         }
     },
     methods: {
@@ -302,7 +306,12 @@ export default {
             this.item.defaultList = this.$refs.upload.fileList;
         },
         openFile(url) {
-            window.open(url.replace(/#/g, '%23'), '_blank');
+            if (this.domain) {
+                url = this.domain + url;
+                window.open(url.replace(/#/g, '%23'), '_blank');
+            } else {
+                window.open(url.replace(/#/g, '%23'), '_blank');
+            }
         },
         //点击已上传的文件
         onPreview(file) {

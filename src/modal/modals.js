@@ -140,4 +140,4 @@ const getModals = langs => {
 	
 	]
 }
-export default getModals
+export default getModals 
