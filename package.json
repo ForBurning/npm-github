@@ -1,6 +1,6 @@
 {
   "name": "@neotrident/utils",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "utils",
   "main": "dist/utils.min.js",
   "scripts": {
@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-preset-stage-2": "^6.24.1",
+    "copy-webpack-plugin": "^5.1.1",
     "core-js": "^2.6.5",
     "file-loader": "^4.2.0",
     "moment": "^2.24.0"
