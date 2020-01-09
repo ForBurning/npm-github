@@ -2,6 +2,6 @@
 *.md
 *.yml
 build/
-node_modules/
+/node_modules/
 test/
 src/
