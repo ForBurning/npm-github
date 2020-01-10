@@ -8,7 +8,7 @@ module.exports = {
     entry: "./src/index.js",//入口文件，src目录下的index.js文件，
     output: {
         path: path.resolve(__dirname, './dist'),//输出路径，就是新建的dist目录，
-        publicPath: '/dist/',
+        publicPath: '../',
         filename: 'neoCustomForm.min.js',
         libraryTarget: 'umd',
         umdNamedDefine: true
@@ -42,9 +42,9 @@ module.exports = {
             test: /\.(png|jpg|gif|ttf|svg|woff|eot|woff2|woff)$/,
             loader: 'url-loader',
             query: {
-                limit: 100000,
+                limit: 10000000,
                 name: '[name].[ext]?[hash]',
-                outputPath: "/fonts/"
+                outputPath: "fonts/"
             }
         }
         ]
