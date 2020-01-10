@@ -414,8 +414,8 @@ export default {
 
             .ivu-upload {
                 position: relative;
-                display: block;
-                float: left;
+                display: flex;
+                align-items: center;
 
                 &.view-mode {
 

@@ -277,7 +277,7 @@ body {
         }
 
         .middle-section {
-            flex: 1 0 auto;
+            flex: 1 0 0%;
             padding: 0 12px;
             // height: 100%;
 
