@@ -31,7 +31,7 @@
                 <div class="form">
                     <slot name="preset-fields" class="preset-fields"></slot>
                     <vddl-list class="custom-fields" :list="data" :inserted="handleInsert" effect-allowed="move">
-                        <list v-for="(item, index) in data" :domain="domain" :mode="mode" :key="item.id" :item="item" :index="index" :list="data" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
+                        <list v-for="(item, index) in data" :domain="domain" :mode="mode" :key="item.id" :item="item" :index="index" :list="data" :selected-item="selectedItem" @handleInsert="handleInsert" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon" :uploadAction="uploadAction">
                         </list>
                     </vddl-list>
                 </div>
@@ -130,6 +130,10 @@ import getModals from "../modal/modals";
 export default {
     name: "neoCustomForm",
     props: {
+        uploadAction:{
+            type: String,
+            default: ''
+        },
         height: {
             type: String,
             default: '100%'

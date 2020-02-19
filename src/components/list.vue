@@ -7,7 +7,7 @@
         </Poptip>
 
         <vddl-list class="container-column" v-for="(column, index) in item.columns" :list="column" :allowed-types="allowTypes" :key="index" :inserted="handleInsert">
-            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :domain="domain" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon">
+            <list v-for="(col, number) in column" :key="number" :index="number" :item="col" :list="column" :domain="domain" :mode="mode" :selected-item="selectedItem" @handleSelect="handleSelect" @handleDelete="handleDelete" :header="header" :lang="lang" :hasColon="hasColon" :uploadAction="uploadAction">
             </list>
         </vddl-list>
     </div>
@@ -140,7 +140,7 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag attachment">
-                <Upload ref="upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="item.action" :name="item.fileName" :class="{'view-mode': isView}">
+                <Upload ref="upload" :on-preview="onPreview" :on-remove="onRemove" :default-file-list="item.defaultList" :headers="uploadHeaders" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError" :action="uploadAction || item.action" :name="item.fileName" :class="{'view-mode': isView}">
                     <Button icon="ios-cloud-upload-outline">{{langs.upload}}</Button>
                 </Upload>
             </vddl-nodrag>
@@ -233,6 +233,10 @@ export default {
         };
     },
     props: {
+        uploadAction:{
+            type: String,
+            default: ''
+        },
         item: {
             type: Object,
             default: () => {}
@@ -273,25 +277,31 @@ export default {
     methods: {
         //文件上传成功
         onSuccess(response, file, fileList) {
-            if (this.item.nameMapping) {
-                let name = {};
-                Object.assign(name, response);
-                this.item.nameMapping.split('.').map(key => {
-                    name = name[key];
-                })
-                file.name = name.split('/').pop();
-            }
+            if (response.code === 100) {
+                if (this.item.nameMapping) {
+                    let name = {};
+                    Object.assign(name, response);
+                    this.item.nameMapping.split('.').map(key => {
+                        name = name[key];
+                    })
+                    file.name = name.split('/').pop();
+                }
 
-            if (this.item.urlMapping) {
-                let url = {};
-                Object.assign(url, response);
-                this.item.urlMapping.split('.').map(key => {
-                    url = url[key];
-                })
-                file.url = url;
-            }
+                if (this.item.urlMapping) {
+                    let url = {};
+                    Object.assign(url, response);
+                    this.item.urlMapping.split('.').map(key => {
+                        url = url[key];
+                    })
+                    file.url = url;
+                }
 
-            this.item.defaultList = this.$refs.upload.fileList;
+                this.item.defaultList = this.$refs.upload.fileList;
+            } else {
+                this.$Message.warning(response.message);
+                const fileList = this.$refs.upload.fileList;
+                this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+            }
         },
         //文件上传失败
         onError(error, file, fileList) {
@@ -367,7 +377,6 @@ export default {
         this.attachmentModal = getModals(this.langs).pop();
 
         if (this.item.type === 'attachment') {
-            this.item.action = this.item.action || this.attachmentModal.action;
             this.item.fileName = this.item.fileName || this.attachmentModal.fileName;
             this.formatOldFileData(this.item);
         }

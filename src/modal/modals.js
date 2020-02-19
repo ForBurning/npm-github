@@ -131,7 +131,7 @@ const getModals = langs => {
 			title: langs.attachment,
 			model: '',
 			icon: 'md-link',
-			action: '/Controls/UploadFileOrgan?folder=materielAttachment',
+			action: '',
 			nameMapping: '',
 			urlMapping: 'ResponseBody',
 			fileName: 'materielAttachmentFile',
