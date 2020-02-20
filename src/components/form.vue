@@ -115,8 +115,16 @@
 <script>
 import Vue from "vue";
 import iView from "view-design";
+import VueI18n from 'vue-i18n';
+import en from 'view-design/dist/locale/en-US';
+import zh from 'view-design/dist/locale/zh-CN';
+Vue.use(VueI18n);
 import 'view-design/dist/styles/iview.css';
 Vue.use(iView);
+
+Vue.locale('en-US', en);
+Vue.locale('zh-CN', zh);
+
 import Vddl from "vddl"
 Vue.use(Vddl);
 import Vuebar from 'vuebar'
@@ -225,6 +233,9 @@ export default {
     },
     created() {
         this.langs = Object.assign({}, getLangs(this.lang), this.langPackage);
+        console.log(this.lang);
+        
+        Vue.config.lang = this.lang;
         this.containers = getContainers(this.langs);
         this.modals = getModals(this.langs);
     }
