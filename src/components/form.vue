@@ -233,8 +233,6 @@ export default {
     },
     created() {
         this.langs = Object.assign({}, getLangs(this.lang), this.langPackage);
-        console.log(this.lang);
-        
         Vue.config.lang = this.lang;
         this.containers = getContainers(this.langs);
         this.modals = getModals(this.langs);
