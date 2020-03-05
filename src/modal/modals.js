@@ -133,7 +133,7 @@ const getModals = langs => {
 			icon: 'md-link',
 			action: '',
 			nameMapping: '',
-			urlMapping: 'ResponseBody',
+			urlMapping: 'response',
 			fileName: 'materielAttachmentFile',
 			defaultList: []
 		},
