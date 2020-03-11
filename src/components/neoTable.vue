@@ -187,6 +187,7 @@ export default {
             movingStartX: 0,
             showHideCol: false,
             tableProps: {},
+            options:{}
         };
     },
     beforeMount() {
@@ -324,33 +325,39 @@ export default {
         //页码
         onChange(pageIndex) {
             this.pageIndex = pageIndex;
-            this.fetchData({
+            Object.assign(this.options, {
                 pageIndex: this.pageIndex,
-                pageSize: this.pageSize1,
-            });
+                pageSize: this.pageSize1
+            })
+            this.fetchData(this.options);
         },
         //每页条数
         onPageSizeChange(pageSize) {
             this.pageIndex = 1;
             this.pageSize1 = pageSize;
-            this.fetchData({
-                pageSize: this.pageSize1,
-            });
+            Object.assign(this.options, {
+                pageIndex: this.pageIndex,
+                pageSize: this.pageSize1
+            })
+            this.fetchData(this.options);
         },
         //重新加载
         reload(options = {}) {
             this.pageIndex = 1;
-            this.fetchData({
+            Object.assign(this.options, {
                 pageIndex: this.pageIndex,
                 pageSize: this.pageSize1,
-            });
+                ...options
+            })
+            this.fetchData(this.options);
         },
         //刷新当前页
         refresh() {
-            this.fetchData({
+            Object.assign(this.options, {
                 pageIndex: this.pageIndex,
                 pageSize: this.pageSize1,
-            });
+            })
+            this.fetchData(this.options);
         },
         //获取所选
         getSelection() {
@@ -374,12 +381,14 @@ export default {
         //通过外部方法获取数据
         async fetchData({
             pageIndex = 1,
-            pageSize = 10
+            pageSize = 10,
+            ...options
         }) {
             this.loading = true;
             const resp = await this.data({
                 pageIndex,
-                pageSize
+                pageSize,
+                ...options
             });
 
             this.data1 = resp[this.mapping.rows];
