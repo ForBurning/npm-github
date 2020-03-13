@@ -64,10 +64,11 @@
         </div>
         <div class="component-content">
             <vddl-nodrag class="nodrag">
-                <Select v-model="item.model" multiple="" :placeholder="item.placeholder" v-if="isDesign || isEdit" transfer>
+                <Select v-model="item.model" multiple :placeholder="item.placeholder" v-if="isDesign || isEdit" transfer>
                     <Option v-for="m in item.value" :value="m.value" :key="m.label">{{ m.label }}</Option>
                 </Select>
-                <div class="view-model" v-else>{{item.model.join(',')}}</div>
+                <!-- 兼容导入的多选下拉框数据 -->
+                <div class="view-model" v-else>{{typeof item.model === 'string' ? item.model : item.model.join(',')}}</div>
             </vddl-nodrag>
         </div>
     </div>
@@ -99,7 +100,8 @@
                 <CheckboxGroup v-model="item.model" class="ivu-middle-group" v-if="isDesign || isEdit">
                     <Checkbox v-for="m in item.value" :label="m.label" :key="m.value"></Checkbox>
                 </CheckboxGroup>
-                <div class="view-model" v-else>{{item.model.join(',')}}</div>
+                <!-- 兼容导入的checkbox数据 -->
+                <div class="view-model" v-else>{{typeof item.model === 'string' ? item.model : item.model.join(',')}}</div>
             </vddl-nodrag>
         </div>
     </div>
